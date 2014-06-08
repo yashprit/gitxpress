@@ -1,41 +1,25 @@
 {
     "manifest_version": 2,
-    "name": "GITbrowse",
-    "description": "This extension browse github",
-    "version": "1.0",
-    "permissions": [
-        "https://github.com/"
-    ],
-    "browser_action": {
-        "default_icon": "icons/icon.png"
-    },
-    "background": {
-        "scripts": [
-            "chrome.js"
+    "name": "hubrowser-dev",
+    "description": "Browser plugin for creating file explorer tree and bookmarking GitHub Repository",
+    "version": "0.0.SNAPSHOT",
+    "permissions": ["https://github.com/"],
+    "content_scripts": [{
+        "matches": [
+            "https://github.com/*"
         ],
-        "persistent": false
-    },
-    "icons": {
-        "icons": "icons/arrow.png"
-    },
-    "content_scripts": [
-        {
-            "matches": [
-                "https://github.com/*"
-            ],
-            "css": [
-                "vendor/css/jquery.sidr.light.css",
-                "vendor/css/ui.easytree.css",
-                "gitbrowser-style-injected.css"
-            ],
-            "js": [
-                "vendor/js/jquery.js",
-                "vendor/js/jquery.pjax.js",
-                "vendor/js/jquery.sidr.min.js",
-                "vendor/js/jquery.easytree.min.js",
-                "vendor/js/github.js",
-                "gitbrowser-content.js"
-            ]
-        }
-    ]
+        "css": [
+            "vendor/css/jquery.sidr.light.css",
+            "vendor/css/ui.easytree.css",
+            "gitbrowser-style-injected.css"
+        ],
+        "js": [
+            "vendor/js/jquery.js",
+            "vendor/js/jquery.pjax.js",
+            "vendor/js/jquery.sidr.min.js",
+            "vendor/js/jquery.easytree.min.js",
+            "vendor/js/github.js",
+            "gitbrowser-content.js"
+		]
+    }]
 }
