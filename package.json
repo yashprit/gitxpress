@@ -1,0 +1,32 @@
+{
+  "name": "hubrowser",
+  "version": "0.0.1",
+  "description": "Browser plugin for creating file explorer tree and bookmarking GitHub Repository",
+  "main": "gulpfile.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/yashprit/hubrowser.git"
+  },
+  "author": "Yashprit Singh",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yashprit/hubrowser/issues"
+  },
+  "homepage": "https://github.com/yashprit/hubrowser",
+  "devDependencies": {
+    "gulp": "^3.7.0",
+    "gulp-rename": "^1.2.0",
+    "gulp-concat": "^2.2.0",
+    "gulp-uglify": "^0.3.0",
+    "gulp-jshint": "^1.6.2",
+    "gulp-sass": "^0.7.2",
+    "gulp-strip-debug": "^0.3.0",
+    "gulp-zip": "^0.3.4",
+    "gulp-json-editor": "^2.0.2",
+    "gulp-concat-css": "^0.1.4",
+    "gulp-clean": "^0.3.0"
+  }
+}
