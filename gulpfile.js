@@ -71,7 +71,6 @@ gulp.task('scripts', function() {
     return gulp.src([source.github, source.jquery, source.pjax, source.sidr, source.easytree, source.main])
         .pipe(concat(filename.js))
         .pipe(stripDebug())
-        .pipe(uglify())
         .pipe(gulp.dest(build.js));
 });
 

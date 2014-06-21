@@ -21,7 +21,8 @@
 			root[nodes[0]] = {
 				path: '#' + nodes.join('/'),
 				child: {},
-				isFolder: isfolder
+				isFolder: isfolder,
+        type: isfolder? 'tree' : 'blob'
 			}
 		}
 		arguments.callee(nodes.slice(1), root[nodes[0]].child, type)
@@ -31,21 +32,22 @@
 		for (var key in obj) {
 			if (!obj.hasOwnProperty(key)) continue;
 			var item = obj[key];
+      var href = '/' + repoURL.username +'/' + repoURL.repo + '/' + item.type + '/' + repoURL.branch
 			if(!link) {
-				var href = repoURL + key;
+				 var url = href + '/'  + key;
 			} else {
-				var href = link + '/' + key
+				var url = href + '/' + link + '/' + key
 			}
 			
 			var _obj = {
 				text: key,
-				href: href,
+				href: url,
 				isFolder: item.isFolder
 			}
 			data.push(_obj);
 			if (item.child) {
 				_obj.children = []
-				convertData(_obj.children, item.child, href)
+				convertData(_obj.children, item.child, key)
 			}
 		}
 	}
@@ -61,13 +63,15 @@
 						 folders[v.path] = {
 							//path: '#' + nodes.join('/'),
 							child: {},
-							isFolder: true
+							isFolder: true,
+              type: v.type 
 						} 
 					} else if(v.type === 'blob'){
 					 	folders[v.path] = {
 							//path: '#' + nodes.join('/'),
 							//child: {},
-							isFolder: false
+							isFolder: false,
+              type: v.type
 						} 
 					}
 				}
@@ -102,6 +106,10 @@
 
 		$.sidr('open', 'gitbrowser', function() {
 			$('#treeview').easytree(options);
+      $(document).pjax('[data-pjax] a, a[data-pjax]', '#js-repo-pjax-container');
+      $(document).on('click', 'a.message', function(e){
+        e.preventDefault();
+      })
 			$('body').css('left', '150px');
 		})
 	}
@@ -135,7 +143,11 @@
 				branch = i.substr(0, i.indexOf('/'));
 			}
 			
-			repoURL = '/' + username +'/' + repo + '/tree/' + branch + '/';
+			repoURL = {
+        username: username,
+        repo: repo,
+        branch: branch
+      };
 		
 			var repo = github.getRepo(username, repo);
 			
@@ -149,11 +161,7 @@
 
 			repo.getTree(branch + '?recursive=true', renderRepo);
 		
-			$(document).pjax('[data-pjax] a, a[data-pjax]', '#js-repo-pjax-container')
-		
-			$(document).on('click', '[data-pjax] a, a[data-pjax]', function(e){
-				e.preventDefault()
-			})
+			
 		} 
 	});
 })(jQuery)
