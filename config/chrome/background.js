@@ -10,11 +10,11 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
       return
 
     const cssFiles = [
-      'gitbar.css'
+      'style/gitbrowser-style-injected.css'
     ]
 
     const jsFiles = [
-      'Gitbar.js'
+      'js/gitxpress.js'
     ]
 
     eachTask([

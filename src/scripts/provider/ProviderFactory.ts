@@ -1,12 +1,15 @@
 /// <reference path="Provider.ts" />
 /// <reference path="GithubProvider.ts" />
 
-namespace GitProvider {
+import * as IProvider from './Provider';
+import * as Provider from './GithubProvider';
+
+export namespace GitProvider {
 
   export class GitFactory {
-    public static createProvider(type: string) : GitAbstract {
+    public static createProvider(type: string) : IProvider.GitProvider.GitAbstract {
       if(type === 'A') {
-        return new GithubProvider();
+        return new Provider.GitProvider.GithubProvider();
       }
       return null;
     }

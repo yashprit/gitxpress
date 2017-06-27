@@ -1,7 +1,9 @@
 /// <reference path="Provider.ts" />
 
-namespace GitProvider {
-  export class GithubProvider implements GitAbstract {
+import * as IProvider from './Provider';
+
+export namespace GitProvider {
+  export class GithubProvider implements IProvider.GitProvider.GitAbstract {
     loadRepo= (params:any) => {
       console.log("github provider")
     }

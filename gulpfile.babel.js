@@ -10,7 +10,7 @@ import tsc from 'gulp-typescript';
 import tslint from 'gulp-tslint';
 import sourcemaps from 'gulp-sourcemaps';
 
-
+const version = require('./package.json').version
 
 const $ = require('gulp-load-plugins')();
 
@@ -18,71 +18,11 @@ var production = process.env.NODE_ENV === "production";
 var target = process.env.TARGET || "chrome";
 var environment = process.env.NODE_ENV || "development";
 
-var generic = JSON.parse(fs.readFileSync(`./config/${environment}.json`));
-var specific = JSON.parse(fs.readFileSync(`./config/${target}.json`));
-var context = Object.assign({}, generic, specific);
+let tsProject = tsc.createProject('./tsconfig.json');
 
-
-var tsProject = tsc.createProject('./tsconfig.json');
-
-gulp.task('typescript', () => {
-  return gulp.src('./src/scripts/**/*.ts')
-    .pipe(ts(tsProject))
-    .js.pipe(gulp.dest('./temp/source/js'));
-  //var tsResult = tsProject.src().pipe(tsProject());
-  //return tsResult.js.pipe(gulp.dest('./build/js/'));
-});
-
-var manifest = {
-  dev: {
-    "background": {
-      "scripts": [
-        "scripts/background.js"
-      ]
-    }
-  },
-
-  firefox: {
-    "applications": {
-      "gecko": {
-        "id": "my-app-id@mozilla.org"
-      }
-    }
-  }
-}
-
-// Tasks
 gulp.task('clean', () => {
   return pipe(`./build`, $.clean())
-})
-
-gulp.task('build', (cb) => {
-  $.runSequence('clean', 'styles', 'typescript', 'ext', cb)
 });
-
-gulp.task('watch', ['build'], () => {
-  $.livereload.listen();
-
-  gulp.watch(['./src/**/*']).on("change", () => {
-    $.runSequence('build', $.livereload.reload);
-  });
-});
-
-gulp.task('default', ['build']);
-
-gulp.task('ext', ['manifest', 'js'], () => {
-  return mergeAll(target)
-});
-
-
-// -----------------
-// COMMON
-// -----------------
-gulp.task('js', () => {
-  return buildJS(target)
-})
-
-
 
 gulp.task('styles', () => {
   return gulp.src('src/styles/**/*.scss')
@@ -92,37 +32,45 @@ gulp.task('styles', () => {
       precision: 10,
       includePaths: ['.']
     }).on('error', $.sass.logError))
-    .pipe(gulp.dest(`build/${target}/styles`));
+    .pipe(gulp.dest('./tmp/style'));
 });
 
-gulp.task("manifest", () => {
-  return gulp.src('./manifest.json')
-    .pipe(gulpif(!production, $.mergeJson({
-      fileName: "manifest.json",
-      jsonSpace: " ".repeat(4),
-      endObj: manifest.dev
+gulp.task('ts', () => {
+  return gulp.src('./src/scripts/**/*.ts')
+    .pipe(tsc(tsProject))
+    .js.pipe(gulp.dest('./tmp/source/js'));
+});
+
+gulp.task('bundle-js',  () => {
+  return browserify({
+      entries: './tmp/source/js/GitXpress.js',
+      debug: true
+    })
+    .bundle()
+    .pipe(source('gitxpress.js'))
+    .pipe(buffer())
+    .pipe(gulpif(production, $.uglify({ 
+      "mangle": false,
+      "output": {
+        "ascii_only": true
+      } 
     })))
-    .pipe(gulpif(target === "firefox", $.mergeJson({
-      fileName: "manifest.json",
-      jsonSpace: " ".repeat(4),
-      endObj: manifest.firefox
-    })))
-    .pipe(gulp.dest(`./build/${target}`))
+    .pipe(gulp.dest('./tmp/js/'))
 });
 
-
-
-// -----------------
-// DIST
-// -----------------
-gulp.task('dist', (cb) => {
-  $.runSequence('build', 'zip', cb)
+gulp.task('js', (cb) => {
+  $.runSequence('ts', 'bundle-js', cb)
 });
 
-gulp.task('zip', () => {
-  return pipe(`./build/${target}/**/*`, $.zip(`${target}.zip`), './dist')
-})
+gulp.task('build', (cb) => {
+  $.runSequence('clean', 'styles', 'js', cb)
+});
 
+gulp.task('default', ['chrome']);
+
+gulp.task('chrome', ['build'], (cb) => {
+  return mergeAll('chrome');
+});
 
 // Helpers
 function pipe(src, ...transforms) {
@@ -138,23 +86,9 @@ function mergeAll(dest) {
     pipe(['./src/_locales/**/*'], `./build/${dest}/_locales`),
     pipe([`./src/images/${target}/**/*`], `./build/${dest}/images`),
     pipe(['./src/images/shared/**/*'], `./build/${dest}/images`),
-    pipe(['./src/**/*.html'], `./build/${dest}`)
+    pipe(['./tmp/js/gitxpress.js'], `./build/${dest}/js`),
+    pipe(['./tmp/style/*.css'], `./build/${dest}/style`),
+    pipe(`./config/${dest}/background.js`, $.babel(), `./build/${dest}/js`),
+    pipe(`./config/${dest}/manifest.json`, $.replace('$VERSION', version), `./build/${dest}/`)
   )
-}
-
-function buildJS(target) {
-  return browserify({
-      entries: 'build/js/GitBar.js',
-      debug: true
-    })
-    .bundle()
-    .pipe(source('main.js'))
-    .pipe(buffer())
-    .pipe(gulpif(production, $.uglify({ 
-      "mangle": false,
-      "output": {
-        "ascii_only": true
-      } 
-    })))
-    .pipe(gulp.dest(`build/${target}/scripts`))
 }
