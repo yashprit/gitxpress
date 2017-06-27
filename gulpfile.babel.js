@@ -10,7 +10,7 @@ import tsc from 'gulp-typescript';
 import tslint from 'gulp-tslint';
 import sourcemaps from 'gulp-sourcemaps';
 
-var tsProject = tsc.createProject('./tsconfig.json')
+
 
 const $ = require('gulp-load-plugins')();
 
@@ -22,6 +22,16 @@ var generic = JSON.parse(fs.readFileSync(`./config/${environment}.json`));
 var specific = JSON.parse(fs.readFileSync(`./config/${target}.json`));
 var context = Object.assign({}, generic, specific);
 
+
+var tsProject = tsc.createProject('./tsconfig.json');
+
+gulp.task('typescript', () => {
+  return gulp.src('./src/scripts/**/*.ts')
+    .pipe(ts(tsProject))
+    .js.pipe(gulp.dest('./temp/source/js'));
+  //var tsResult = tsProject.src().pipe(tsProject());
+  //return tsResult.js.pipe(gulp.dest('./build/js/'));
+});
 
 var manifest = {
   dev: {
@@ -72,10 +82,7 @@ gulp.task('js', () => {
   return buildJS(target)
 })
 
-gulp.task('typescript', () => {
-  var tsResult = tsProject.src().pipe(tsProject());
-  return tsResult.js.pipe(gulp.dest('./build/js/'));
-})
+
 
 gulp.task('styles', () => {
   return gulp.src('src/styles/**/*.scss')

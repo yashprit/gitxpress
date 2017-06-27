@@ -1,11 +1,17 @@
 {
     "compilerOptions": {
-        "target": "es5",
+        "module": "commonjs",
+        "noImplicitAny": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
         "sourceMap": true
     },
     "compileOnSave": false,
     "files": [
       "../typings/tsd.d.ts",
-      "./src/scripts/view/GitBar.ts"
+      "./src/scripts/GitXpress.ts",
+      "./src/scripts/provider/Provider.ts",
+      "./src/scripts/provider/GithubProvider.ts",
+      "./src/scripts/provider/ProviderFactory.ts"
     ]
 }
