@@ -1,0 +1,27 @@
+{
+  "name": "hubrowser",
+  "version": "0.0.1",
+  "manifest_version": 2,
+  "description": "Browser plugin for creating file explorer tree and bookmarking GitHub Repository",
+  "icons": {
+    "16": "icons/icon-16.png",
+    "128": "icons/icon-128.png"
+  },
+  "default_locale": "en",
+  "background": {
+    "scripts": [
+      "scripts/background.js"
+    ],
+    "persistent": false
+  },
+  "optional_permissions": [
+    "<all_urls>"
+  ],
+  "permissions": [
+    "https://bitbucket.org/*",
+    "https://github.com/*",
+    "storage"
+  ]
+}
+
+

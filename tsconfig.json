@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "noImplicitAny": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "sourceMap": true,
+        "target": "ES6"
+    },
+    "compileOnSave": false,
+    "files": [
+      "../typings/tsd.d.ts",
+      "./src/scripts/GitXpress.ts",
+      "./src/scripts/provider/Provider.ts",
+      "./src/scripts/provider/GithubProvider.ts",
+      "./src/scripts/provider/ProviderFactory.ts"
+    ]
+}
