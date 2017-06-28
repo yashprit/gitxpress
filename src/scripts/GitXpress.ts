@@ -3,7 +3,7 @@
 
 import * as GitFactory from './provider/ProviderFactory';
 import * as IProvider from './provider/Provider';
-
+import template from './sidebar.template.js';
 
 declare var chrome:any;
 
@@ -11,6 +11,7 @@ class GitXpress {
 
   DOM:object;
   location:string;
+  htmlTemplate: string;
   
   constructor(){
     this.DOM = {
@@ -21,11 +22,11 @@ class GitXpress {
   }
 
   onDomReady(){
-    chrome.devtools.inspectedWindow.eval('document.location.href', (currentUrl:string) => {
-      this.location = currentUrl;
-      let provider: IProvider.GitProvider.GitAbstract = GitFactory.GitProvider.GitFactory.createProvider(this.location);
-      provider.loadRepo(null);
-    });
+    this.htmlTemplate = template['sidebar.template.html'];
+    this.location = document.location.href;
+    let provider: IProvider.GitProvider.GitAbstract = GitFactory.GitProvider.GitFactory.createProvider(this.location);
+    this.DOM.body.append(this.htmlTemplate);
+    provider.loadRepo(null);
   }
 }
 

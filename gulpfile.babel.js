@@ -9,6 +9,9 @@ import gulpif from "gulp-if";
 import tsc from 'gulp-typescript';
 import tslint from 'gulp-tslint';
 import sourcemaps from 'gulp-sourcemaps';
+import html2string from 'gulp-html2string';
+import path from 'path';
+var htmlToJs = require('gulp-html-to-js');
 
 const version = require('./package.json').version
 
@@ -35,6 +38,14 @@ gulp.task('styles', () => {
     .pipe(gulp.dest('./tmp/style'));
 });
 
+gulp.task('html2js', function () {
+    return gulp.src('src/scripts/sidebar.template.html')
+      .pipe(htmlToJs({
+        concat: 'sidebar.template.js'
+      }))
+      .pipe(gulp.dest('tmp/source/js')); //Output folder 
+  });
+
 gulp.task('ts', () => {
   return gulp.src('./src/scripts/**/*.ts')
     .pipe(tsc(tsProject))
@@ -42,13 +53,28 @@ gulp.task('ts', () => {
 });
 
 gulp.task('bundle-js',  () => {
+  /*let src = [
+    './tmp/source/js/GitXpress.js',
+    './tmp/source/js/provider/Provider.js',
+    './tmp/source/js/provider/GithubProvider.js',
+    './tmp/source/js/provider/ProviderFactory.js',
+    './tmp/sidebar.template.js'
+  ]*/
+
   return browserify({
       entries: './tmp/source/js/GitXpress.js',
       debug: true
     })
+    .transform('babelify', { presets: ['es2015'] })
+    .transform(preprocessify, {
+      includeExtensions: ['.js'],
+      //context: context
+    })
     .bundle()
     .pipe(source('gitxpress.js'))
     .pipe(buffer())
+    .pipe(gulpif(!production, $.sourcemaps.init({ loadMaps: true }) ))
+    .pipe(gulpif(!production, $.sourcemaps.write('./') ))
     .pipe(gulpif(production, $.uglify({ 
       "mangle": false,
       "output": {
@@ -56,11 +82,25 @@ gulp.task('bundle-js',  () => {
       } 
     })))
     .pipe(gulp.dest('./tmp/js/'))
+
+    /*return pipe(
+      src,
+      $.babel(),
+      $.concat('gitxpress.js'),
+      './tmp/js'
+    )*/
+
 });
 
 gulp.task('js', (cb) => {
-  $.runSequence('ts', 'bundle-js', cb)
+  $.runSequence('html2js', 'ts', 'bundle-js', cb)
 });
+
+/*gulp.task('combine-js', function() {
+  return gulp.src(['./tmp/sidebar.js', './tmp/js/gitxpress.js'])
+    .pipe($.concat('gitxpress.js'))
+    .pipe(gulp.dest('./tmp/'));
+});*/
 
 gulp.task('build', (cb) => {
   $.runSequence('clean', 'styles', 'js', cb)

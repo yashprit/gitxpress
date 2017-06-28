@@ -1,10 +1,10 @@
 {
     "compilerOptions": {
-        "module": "commonjs",
         "noImplicitAny": true,
         "removeComments": true,
         "preserveConstEnums": true,
-        "sourceMap": true
+        "sourceMap": true,
+        "target": "ES6"
     },
     "compileOnSave": false,
     "files": [

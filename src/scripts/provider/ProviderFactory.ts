@@ -8,7 +8,7 @@ export namespace GitProvider {
 
   export class GitFactory {
     public static createProvider(type: string) : IProvider.GitProvider.GitAbstract {
-      if(type === 'A') {
+      if(type.includes('https://github.com')) {
         return new Provider.GitProvider.GithubProvider();
       }
       return null;
