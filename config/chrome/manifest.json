@@ -1,5 +1,5 @@
 {
-  "name": "hubrowser",
+  "name": "gitxpress",
   "version": "0.0.1",
   "manifest_version": 2,
   "description": "Browser plugin for creating file explorer tree and bookmarking GitHub Repository",

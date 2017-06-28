@@ -1,5 +1,5 @@
 {
-  "name": "hubrowser",
+  "name": "gitxpress",
   "version": "0.0.1",
   "description": "Browser plugin for creating file explorer tree and bookmarking GitHub Repository",
   "scripts": {
@@ -17,19 +17,31 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/yashprit/hubrowser.git"
+    "url": "git://github.com/yashprit/gitxpress.git"
   },
   "author": "Yashprit Singh",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/yashprit/hubrowser/issues"
+    "url": "https://github.com/yashprit/gitxpress/issues"
   },
-  "homepage": "https://github.com/yashprit/hubrowser",
+  "homepage": "https://github.com/yashprit/gitxpress",
+  "browser": {
+    "jquery": "./node_modules/jquery/dist/jquery.js"
+  },
+  "browserify-shim": {
+    "jquery": "$"
+  },
+  "browserify": {
+    "transform": [
+      "browserify-shim"
+    ]
+  },
   "devDependencies": {
     "babel-core": "^6.1.2",
     "babel-preset-es2015": "^6.1.2",
     "babelify": "^7.3.0",
     "browserify": "^14.1.0",
+    "browserify-shim": "^3.8.14",
     "cross-env": "^3.2.4",
     "event-stream": "^3.3.4",
     "gulp": "^3.9.1",
@@ -38,7 +50,6 @@
     "gulp-concat": "^2.6.1",
     "gulp-eslint": "^2.0.0",
     "gulp-html-to-js": "0.0.5",
-    "gulp-html2string": "^0.1.1",
     "gulp-if": "^2.0.2",
     "gulp-livereload": "^3.8.1",
     "gulp-load-plugins": "^0.5.3",

@@ -1,41 +1,43 @@
-<div class="git-top-header" id="header">
-  <div class="clearfix navigation">
-    <ul class="header-nav left">
-      <li class="header-nav-item explore">
-          <a class="header-nav-link active" id="repo">Browse</a>
-      </li>
-      <li class="header-nav-item">
-          <a class="header-nav-link">Bookmarks</a>
-      </li>
-      <li class="header-nav-item">
-          <span class="octicon octicon-star"></span>
-      </li>
-      <li class="header-nav-item">
-        <img src="https://assets-cdn.github.com/images/spinners/octocat-spinner-32.gif" id="loading"/>
-      </li>
-    </ul>
-    <a id="simple-menu" class="gitbrowser-action" href="#sidr">
-      <span class="minimize"></span>
-    </a>
+<div class="gitxpress-wrapper">
+  <div class="git-top-header" id="header">
+    <div class="clearfix navigation">
+      <ul class="header-nav left">
+        <li class="header-nav-item explore">
+            <a class="header-nav-link active" id="repo">Browse</a>
+        </li>
+        <li class="header-nav-item">
+            <a class="header-nav-link">Bookmarks</a>
+        </li>
+        <li class="header-nav-item">
+            <span class="octicon octicon-star"></span>
+        </li>
+        <li class="header-nav-item">
+          <img src="https://assets-cdn.github.com/images/spinners/octocat-spinner-32.gif" id="loading"/>
+        </li>
+      </ul>
+      <a id="simple-menu" class="gitbrowser-action" href="#sidr">
+        <span class="minimize"></span>
+      </a>
+    </div>
   </div>
-</div>
-<div id="browse">
-  <span class="branch-style js-menu-target css-truncate">
-    <span class="octicon octicon-git-branch"style="margin-left: -6px;margin-right: 10px;"></span>
-    <i>branch:</i>
-    <span class="js-select-button css-truncate-target" id="branchName"></span>
-  </span>
-  <div class="entry-title public" style="font-size:13px">
-    <span class="mega-octicon octicon-repo" style="font-size: 17px;margin-right: 5px;padding: 5px;"></span>
-    <span class="author">
-      <a class="url fn"><span itemprop="title" id="userName"></a>
+  <div id="browse">
+    <span class="branch-style js-menu-target css-truncate">
+      <span class="octicon octicon-git-branch"style="margin-left: -6px;margin-right: 10px;"></span>
+      <i>branch:</i>
+      <span class="js-select-button css-truncate-target" id="branchName"></span>
     </span>
-    <strong>
-      <a class="js-current-repository js-repo-home-link" id="repoName"></a>
-    </strong>
-    <span class="page-context-loader">
-      <img alt="" height="16" src="https://assets-cdn.github.com/images/spinners/octocat-spinner-32.gif" width="16">
-    </span>
+    <div class="entry-title public" style="font-size:13px">
+      <span class="mega-octicon octicon-repo" style="font-size: 17px;margin-right: 5px;padding: 5px;"></span>
+      <span class="author">
+        <a class="url fn"><span itemprop="title" id="userName"></a>
+      </span>
+      <strong>
+        <a class="js-current-repository js-repo-home-link" id="repoName"></a>
+      </strong>
+      <span class="page-context-loader">
+        <img alt="" height="16" src="https://assets-cdn.github.com/images/spinners/octocat-spinner-32.gif" width="16">
+      </span>
+    </div>
+    <div id="treeview"></div>
   </div>
-  <div id="treeview"></div>
 </div>

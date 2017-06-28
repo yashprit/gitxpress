@@ -8,7 +8,7 @@
     },
     "compileOnSave": false,
     "files": [
-      "../typings/tsd.d.ts",
+      "../typings/index.d.ts",
       "./src/scripts/GitXpress.ts",
       "./src/scripts/provider/Provider.ts",
       "./src/scripts/provider/GithubProvider.ts",
