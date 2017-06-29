@@ -1,11 +1,11 @@
 /// <reference path="./provider/Provider.ts" />
 /// <reference path="./provider/ProviderFactory.ts" />
-/// <reference path="../../typings/globals/jquery/index.d.ts" />
+/// <reference path="../../typings/index.d.ts" />
 
 import * as GitFactory from './provider/ProviderFactory';
 import * as IProvider from './provider/Provider';
+//import * as Slideout from 'slideout';
 import $ from 'jquery';
-import template from './sidebar.template.js';
 
 declare var chrome:any;
 
@@ -28,12 +28,22 @@ class GitXpress {
   }
 
   onDomReady(){
-    this.htmlTemplate = template['sidebar.template.html'];
+    this.htmlTemplate = (<any>window).template['sidebar.template.html'];
     this.location = document.location.href;
     let provider: IProvider.GitProvider.GitAbstract = GitFactory.GitProvider.GitFactory.createProvider(this.location);
-    $(this.DOM.body).append(this.htmlTemplate);
-    //this.DOM.body.append(this.htmlTemplate);
+    (<any>$)(this.DOM.body).append(this.htmlTemplate);
     provider.loadRepo(null);
+    //this.loadSidebar();
+    //console.log(Slideout);
+  }
+
+  loadSidebar() {
+    /*const slideout = new Slideout({
+      'panel': document.getElementById('js-repo-pjax-container'),
+      'menu': document.getElementById('gitxpress-menu'),
+      'padding': 256,
+      'tolerance': 70
+    });*/
   }
 }
 

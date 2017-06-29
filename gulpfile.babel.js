@@ -33,16 +33,30 @@ gulp.task('styles', () => {
       precision: 10,
       includePaths: ['.']
     }).on('error', $.sass.logError))
+    .pipe($.concat('gitxpress.css'))
     .pipe(gulp.dest('./tmp/style'));
 });
 
-gulp.task('html2js', function () {
+gulp.task('html2js', () => {
     return gulp.src('src/scripts/sidebar.template.html')
       .pipe(htmlToJs({
-        concat: 'sidebar.template.js'
+        concat: 'sidebar.template.js',
+        global: 'window.template'
       }))
       .pipe(gulp.dest('tmp/source/js'));
   });
+
+gulp.task('vendor', () => {
+  let src = [
+    './src/vendor/bootstrap-treeview.js',
+    './tmp/source/js/sidebar.template.js'
+  ]
+  return pipe(
+    src,
+    $.concat('gitxpress-vendor.js'),
+    './tmp/js/'
+  )
+})
 
 gulp.task('ts', () => {
   return gulp.src('./src/scripts/**/*.ts')
@@ -75,7 +89,7 @@ gulp.task('bundle-js',  () => {
 });
 
 gulp.task('js', (cb) => {
-  $.runSequence('html2js', 'ts', 'bundle-js', cb)
+  $.runSequence('html2js', 'ts', 'bundle-js', 'vendor', cb)
 });
 
 gulp.task('build', (cb) => {
@@ -103,7 +117,8 @@ function mergeAll(dest) {
     pipe([`./src/images/${target}/**/*`], `./build/${dest}/images`),
     pipe(['./src/images/shared/**/*'], `./build/${dest}/images`),
     pipe(['./tmp/js/gitxpress.js'], `./build/${dest}/js`),
-    pipe(['./tmp/style/*.css'], `./build/${dest}/style`),
+    pipe(['./tmp/js/gitxpress-vendor.js'], `./build/${dest}/js`),
+    pipe(['./tmp/style/gitxpress.css'], `./build/${dest}/style`),
     pipe(`./config/${dest}/background.js`, $.babel(), `./build/${dest}/js`),
     pipe(`./config/${dest}/manifest.json`, $.replace('$VERSION', version), `./build/${dest}/`)
   )

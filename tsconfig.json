@@ -4,7 +4,8 @@
         "removeComments": true,
         "preserveConstEnums": true,
         "sourceMap": true,
-        "target": "ES6"
+        "target": "ES6",
+        "allowSyntheticDefaultImports" : true
     },
     "compileOnSave": false,
     "files": [

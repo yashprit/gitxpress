@@ -65,7 +65,6 @@
     "gulp-typescript": "^3.1.7",
     "gulp-uglify": "^1.5.4",
     "gulp-zip": "^2.0.3",
-    "jquery": "^3.2.1",
     "preprocessify": "^1.0.1",
     "tslint": "^5.4.3",
     "typescript": "^2.3.4",
