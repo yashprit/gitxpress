@@ -89,7 +89,7 @@ gulp.task('bundle-js',  () => {
 });
 
 gulp.task('js', (cb) => {
-  $.runSequence('html2js', 'ts', 'bundle-js', 'vendor', cb)
+  $.runSequence('html2js', 'ts', 'bundle-js', cb)
 });
 
 gulp.task('build', (cb) => {

@@ -4,6 +4,7 @@ import * as GitFactory from './provider/ProviderFactory';
 import * as IProvider from './provider/Provider';
 import $ from 'jquery';
 import 'bigslide';
+import 'bootstrap-treeview';
 
 class GitXpress {
   location:string;
