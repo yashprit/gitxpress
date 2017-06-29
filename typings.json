@@ -1,9 +1,0 @@
-{
-  "ambientDependencies": {},
-  "globalDependencies": {
-    "jquery": "registry:dt/jquery#1.10.0+20170310222111"
-  },
-  "dependencies": {
-    "slideout": "registry:dt/slideout#0.1.12+20160620211513"
-  }
-}

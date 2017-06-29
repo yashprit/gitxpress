@@ -5,14 +5,15 @@
         "preserveConstEnums": true,
         "sourceMap": true,
         "target": "ES6",
-        "allowSyntheticDefaultImports" : true
+        "types" : ["jquery"],
+        "allowSyntheticDefaultImports":true
     },
     "compileOnSave": false,
     "files": [
-      "../typings/index.d.ts",
       "./src/scripts/GitXpress.ts",
       "./src/scripts/provider/Provider.ts",
       "./src/scripts/provider/GithubProvider.ts",
-      "./src/scripts/provider/ProviderFactory.ts"
+      "./src/scripts/provider/ProviderFactory.ts",
+      "./typings.d.ts"
     ]
 }
