@@ -4,7 +4,7 @@ import * as GitFactory from './provider/ProviderFactory';
 import * as IProvider from './provider/Provider';
 import $ from 'jquery';
 import 'bigslide';
-import 'bootstrap-treeview';
+import octicons from "octicons";
 
 class GitXpress {
   location:string;
@@ -29,7 +29,8 @@ class GitXpress {
   loadSidebar() {
     $('.menu-link').bigSlide({
       state: true,
-      menuWidth: '301px'
+      menuWidth: '301px',
+      menu: ('#menu')
     });
   }
 }

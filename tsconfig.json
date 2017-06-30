@@ -5,7 +5,7 @@
         "preserveConstEnums": true,
         "sourceMap": true,
         "target": "ES6",
-        "types" : ["jquery"],
+        "types" : ["jquery", "octicons"],
         "allowSyntheticDefaultImports":true
     },
     "compileOnSave": false,

@@ -89,7 +89,7 @@ gulp.task('bundle-js',  () => {
 });
 
 gulp.task('js', (cb) => {
-  $.runSequence('html2js', 'ts', 'bundle-js', cb)
+  $.runSequence('html2js', 'ts', 'bundle-js', 'vendor', cb)
 });
 
 gulp.task('build', (cb) => {
@@ -100,6 +100,14 @@ gulp.task('default', ['chrome']);
 
 gulp.task('chrome', ['build'], (cb) => {
   return mergeAll('chrome');
+});
+
+gulp.task('watch', ['chrome'], () => {
+  $.livereload.listen();
+
+  gulp.watch(['./src/**/*']).on("change", () => {
+    $.runSequence('chrome', $.livereload.reload);
+  });
 });
 
 // Helpers
