@@ -1,16 +1,15 @@
 /// <reference path="../../typings.d.ts" />
 
-import * as GitFactory from './provider/ProviderFactory';
-import * as IProvider from './provider/Provider';
+import GitFactory from './provider/ProviderFactory';
+import {GitAbstract, RepoParam, Tree} from './provider/Provider';
 import $ from 'jquery';
 import 'bigslide';
 import octicons from "octicons";
-import request from 'request';
 
 class GitXpress {
-  location:string;
+  location:any;
   htmlTemplate: string;
-  tree: Array<object>;
+  tree: Array<Tree>;
   
   constructor(){
     document.addEventListener('DOMContentLoaded', this.onDomReady.bind(this));
@@ -19,14 +18,14 @@ class GitXpress {
   onDomReady(){
 
     this.htmlTemplate = (<any>window).template['sidebar.template.html'];
-    this.location = document.location.href;
-    let provider: IProvider.GitAbstract = GitFactory.GitFactory.createProvider(this.location);
-    let parsedInfo: IProvider.RepoParam = provider.parseUserAndReponame(this.location);
+    this.location = document.location;
+    let provider: GitAbstract = GitFactory.createProvider(this.location.href);
+    let parsedInfo: RepoParam = provider.getRepoInformation(this.location);
 
     if(parsedInfo) {
       this.updateDOM();
-      provider.loadRepo(parsedInfo, (tree:Array<object>) => {
-        this.tree = tree;
+      provider.loadRepo(parsedInfo, (tree:Array<Tree>) => {
+        this.tree = tree
         this.populateTree();
       });
     } else {
@@ -67,7 +66,7 @@ class GitXpress {
   }
 
   populateTree(){
-    $('#gsTreeView').treeview({
+    $('#gxTreeView').treeview({
       data: this.tree,
       showBorder: false,
       expandIcon: 'gitxpress__icon gitxpress__icon--folder',

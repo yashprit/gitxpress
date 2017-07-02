@@ -12,6 +12,7 @@ import sourcemaps from 'gulp-sourcemaps';
 import htmlToJs from 'gulp-html-to-js';
 import sassInlineSvg from 'gulp-sass-inline-svg';
 import svgmin from 'gulp-svgmin';
+import runSequence from 'run-sequence';
 
 const $ = require('gulp-load-plugins')();
 
@@ -70,7 +71,7 @@ gulp.task('vendor', () => {
 
 gulp.task('ts', () => {
   return gulp.src('./src/scripts/**/*.ts')
-    .pipe(tsc(tsProject))
+    .pipe(tsProject())
     .js.pipe(gulp.dest('./tmp/source/js'));
 });
 
@@ -98,11 +99,11 @@ gulp.task('bundle-js',  () => {
 });
 
 gulp.task('js', (cb) => {
-  $.runSequence('html2js', 'ts', 'bundle-js', 'vendor', cb)
+  runSequence('html2js', 'ts', 'bundle-js', 'vendor', cb)
 });
 
 gulp.task('build', (cb) => {
-  $.runSequence('clean', 'styles', 'js', cb)
+  runSequence('clean', 'styles', 'js', cb)
 });
 
 gulp.task('default', ['chrome']);
@@ -114,7 +115,7 @@ gulp.task('chrome', ['build'], (cb) => {
 gulp.task('watch', ['chrome'], () => {
   $.livereload.listen();
   gulp.watch(['./src/**/*']).on("change", () => {
-    $.runSequence('chrome', $.livereload.reload);
+    runSequence('chrome', $.livereload.reload);
   });
 });
 

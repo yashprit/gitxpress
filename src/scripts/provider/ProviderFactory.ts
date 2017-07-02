@@ -1,10 +1,10 @@
-import * as IProvider from './Provider';
-import * as Provider from './GithubProvider';
+import {GitAbstract} from './Provider';
+import GithubProvider from './GithubProvider';
 
-export class GitFactory {
-  public static createProvider(type: string) : IProvider.GitAbstract {
+export default class GitFactory {
+  public static createProvider(type: string) : GitAbstract {
     if(type.includes('https://github.com')) {
-      return new Provider.GithubProvider();
+      return new GithubProvider();
     }
     return null;
   }
