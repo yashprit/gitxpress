@@ -36,14 +36,30 @@ class GitXpress {
 
   updateDOM() {
     $(document.body).append(this.htmlTemplate);
-    $("#sidebar_menu").attr('aria-label', 'Toggle GitXpress');
-    $("#sidebar_menu").append(octicons['three-bars'].toSVG());
-    $("#branchLink").prepend(octicons['git-branch'].toSVG());
+    $("#gxSideMenuLink").attr('aria-label', 'Toggle GitXpress').append(octicons['three-bars'].toSVG());
+    $("#gxBranchLink").prepend(octicons['git-branch'].toSVG());
+    let bookmark = octicons['bookmark'].toSVG();
+    let gear = octicons['gear'].toSVG();
+    $("#gxActions").append(`<a class="header-nav-link gitxpress__sidebar--header--action" id="gxBookmarkAction">${bookmark}</a><a class="header-nav-link gitxpress__sidebar--header--action" id="gxGearAction">${gear}</a>`);
     this.loadSidebar();
+    this.bindClick();
+  }
+
+  bindClick(){
+    $(document).on('#gxBookmarkAction', 'click', this.showBookmarkView);
+    $(document).on('#gxGearAction', 'click', this.showSettingsView);
+  }
+
+  showBookmarkView() {
+    console.log("bookmark")
+  }
+
+  showSettingsView() {
+    console.log("settings")
   }
 
   loadSidebar() {
-    $('.menu-link').bigSlide({
+    $('#gxSideMenuLink').bigSlide({
       state: true,
       menuWidth: '301px',
       menu: ('#menu')
@@ -51,7 +67,7 @@ class GitXpress {
   }
 
   populateTree(){
-    $('#treeView').treeview({
+    $('#gsTreeView').treeview({
       data: this.tree,
       showBorder: false,
       expandIcon: 'gitxpress__icon gitxpress__icon--folder',

@@ -1,42 +1,47 @@
-
-
-
-.gitxpress-wrapper {
+.gitxpress {
 	position: absolute;
   top: 0;
-}
 
-.gitxpress-sidebar__header {
-	margin-right: -1px;
-}
+	&--relative {
+		position: relative;
+	}
 
-.gitxpress-sidebar__wrapper{
-    z-index: 9999;
+	&--toogle-link {
+		display: block;
+		padding: 5px 10px;
+		font-weight: 600;
+		line-height: 20px;
+		color: rgba(255,255,255,0.75);
+		position: fixed;
+		top: 10px;
+		cursor: pointer;
+		background-color: #24292e
+	}
+
+	&__sidebar {
+		z-index: 9999;
     position: fixed;
     left: -301px;
     width: 301px;
 		border-right: 1px solid #e1e4e8;
 		background-color: #FFFFFF;
-}
 
-.gitxpress-sidebar__tree {
-}
+		&--header {
+			margin-right: -1px;
+			padding-left: 10px;
+			&--linkLarge {
+				display: inline-block !important;
+				width: 78%;
+			}
 
-.menu-link {
-	position: fixed;
-	top: 10px;
-	cursor: pointer;
-	background-color: #24292e
-}
+			&--linkSmall {
+				display: inline-block !important;
+				width: 20%;
+			}
 
-.gitxpress--relative {
-	position: relative;
-}
-
-.gitexpress-header-nav-link {
-	display: block;
-	padding: 5px 10px;
-	font-weight: 600;
-	line-height: 20px;
-	color: rgba(255,255,255,0.75);
+			&--action {
+				display: inline-block !important;
+			}
+		}
+	}
 }
