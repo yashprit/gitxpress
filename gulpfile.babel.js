@@ -10,16 +10,16 @@ import tsc from 'gulp-typescript';
 import tslint from 'gulp-tslint';
 import sourcemaps from 'gulp-sourcemaps';
 import htmlToJs from 'gulp-html-to-js';
-var sassInlineSvg = require('gulp-sass-inline-svg');
-var svgmin = require('gulp-svgmin');
-
-const version = require('./package.json').version
+import sassInlineSvg from 'gulp-sass-inline-svg';
+import svgmin from 'gulp-svgmin';
 
 const $ = require('gulp-load-plugins')();
 
-var production = process.env.NODE_ENV === "production";
-var target = process.env.TARGET || "chrome";
-var environment = process.env.NODE_ENV || "development";
+const version = require('./package.json').version
+
+const production = process.env.NODE_ENV === "production";
+const target = process.env.TARGET || "chrome";
+const environment = process.env.NODE_ENV || "development";
 
 let tsProject = tsc.createProject('./tsconfig.json');
 
@@ -28,11 +28,11 @@ gulp.task('clean', () => {
 });
 
 gulp.task('sass:svg', function(){
-    return gulp.src('./src/icons/seti_ui_icon/*.svg') 
-      .pipe($.svgmin()) // Recommend using svg min to optimize svg files first 
-      .pipe($.sassInlineSvg({
-        destDir: './src/styles'
-      }));
+  return gulp.src('./src/icons/seti_ui_icon/*.svg') 
+    .pipe($.svgmin())
+    .pipe($.sassInlineSvg({
+      destDir: './src/styles'
+    }));
 });
 
 gulp.task('styles', () => {
@@ -48,13 +48,13 @@ gulp.task('styles', () => {
 });
 
 gulp.task('html2js', () => {
-    return gulp.src('src/scripts/sidebar.template.html')
-      .pipe(htmlToJs({
-        concat: 'sidebar.template.js',
-        global: 'window.template'
-      }))
-      .pipe(gulp.dest('tmp/source/js'));
-  });
+  return gulp.src('src/scripts/sidebar.template.html')
+    .pipe(htmlToJs({
+      concat: 'sidebar.template.js',
+      global: 'window.template'
+    }))
+    .pipe(gulp.dest('tmp/source/js'));
+});
 
 gulp.task('vendor', () => {
   let src = [
@@ -75,27 +75,26 @@ gulp.task('ts', () => {
 });
 
 gulp.task('bundle-js',  () => {
-  
   return browserify({
-      entries: './tmp/source/js/GitXpress.js',
-      debug: true
-    })
-    .transform('babelify', { presets: ['es2015'] })
-    .transform(preprocessify, {
-      includeExtensions: ['.js']
-    })
-    .bundle()
-    .pipe(source('gitxpress.js'))
-    .pipe(buffer())
-    .pipe(gulpif(!production, $.sourcemaps.init({ loadMaps: true }) ))
-    .pipe(gulpif(!production, $.sourcemaps.write('./') ))
-    .pipe(gulpif(production, $.uglify({ 
-      "mangle": false,
-      "output": {
-        "ascii_only": true
-      } 
-    })))
-    .pipe(gulp.dest('./tmp/js/'))
+    entries: './tmp/source/js/GitXpress.js',
+    debug: true
+  })
+  .transform('babelify', { presets: ['es2015'] })
+  .transform(preprocessify, {
+    includeExtensions: ['.js']
+  })
+  .bundle()
+  .pipe(source('gitxpress.js'))
+  .pipe(buffer())
+  .pipe(gulpif(!production, $.sourcemaps.init({ loadMaps: true }) ))
+  .pipe(gulpif(!production, $.sourcemaps.write('./') ))
+  .pipe(gulpif(production, $.uglify({ 
+    "mangle": false,
+    "output": {
+      "ascii_only": true
+    } 
+  })))
+  .pipe(gulp.dest('./tmp/js/'))
 });
 
 gulp.task('js', (cb) => {
@@ -114,7 +113,6 @@ gulp.task('chrome', ['build'], (cb) => {
 
 gulp.task('watch', ['chrome'], () => {
   $.livereload.listen();
-
   gulp.watch(['./src/**/*']).on("change", () => {
     $.runSequence('chrome', $.livereload.reload);
   });
