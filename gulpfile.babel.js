@@ -17,6 +17,9 @@ import runSequence from 'run-sequence';
 const $ = require('gulp-load-plugins')();
 
 const version = require('./package.json').version
+const name = require('./package.json').name;
+
+const keyPath = process.env.key;
 
 const production = process.env.NODE_ENV === "production";
 const target = process.env.TARGET || "chrome";
