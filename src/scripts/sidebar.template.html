@@ -1,16 +1,12 @@
 <div class="gitxpress-wrapper">
-  <a class="menu-link push">
-    <button class="btn-octicon tooltipped tooltipped-nw octicon-grabber" aria-label="Fork this project and edit the file"></button>
-  </a>
+  <a class="menu-link push gitexpress-header-nav-link tooltipped-s js-menu-target" id="sidebar_menu"></a>
   <div id="menu" class="gitxpress-sidebar__wrapper">
-    <div class="header gitxpress-sidebar__header"></div>
-    <ul class="gitxpress-sidebar__tree">
-        <li><a href="#">Home</a></li>
-        <li><a href="#">The Ballad of El Goodo</a></li>
-        <li><a href="#">Thirteen</a></li>
-        <li><a href="#">September Gurls</a></li>
-        <li><a href="#">What's Going Ahn</a></li>
-    </ul>
+    <div class="header gitxpress-sidebar__header">
+      <a class="header-nav-link notification-indicator" id="branchLink">
+        Master
+      </a>
+    </div>
+    <ul class="gitxpress-sidebar__tree" id="treeView"></ul>
   </div>
   <!--<div class="git-top-header" id="header">
     <div class="clearfix navigation">

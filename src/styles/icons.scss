@@ -1,0 +1,77 @@
+@import "sass-inline-svg.scss";
+ 
+@mixin icon {
+  display: inline-block;
+  background-size: 16px 21px;
+  height: 16px;
+  width: 16px;
+  content: ' ';
+}
+
+.gitxpress__icon {
+  margin-right: 2px !important;
+	&--apple:before {
+    @include icon;
+    background-image: inline-svg('apple');
+	}
+
+  &--editorconfig:before {
+    @include icon;
+    background-image: inline-svg('editorconfig');
+  }
+
+  &--folder:before {
+    @include icon;
+    background-image: inline-svg('folder');
+	}
+
+  &--gitignore:before {
+    @include icon;
+    background-image: inline-svg('git_ignore');
+	}
+
+  &--github:before {
+    @include icon;
+    background-image: inline-svg('github', #24292e);
+	}
+
+  &--license:before {
+    @include icon;
+    background-image: inline-svg('license');
+	}
+
+  &--markdown:before {
+    @include icon;
+    background-image: inline-svg('markdown');
+	}
+
+  &--javascript:before {
+    @include icon;
+    background-image: inline-svg('javascript');
+	}
+
+  &--json:before {
+    @include icon;
+    background-image: inline-svg('json');
+	}
+
+  &--typescript:before {
+    @include icon;
+    background-image: inline-svg('typescript', #294e80);
+	}
+
+  &--image:before {
+    @include icon;
+    background-image: inline-svg('image');
+	}
+
+  &--newFile:before {
+    @include icon;
+    background-image: inline-svg('new-file');
+	}
+
+  &--babel:before {
+    @include icon;
+    background-image: inline-svg('babel');
+	}
+}

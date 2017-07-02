@@ -10,6 +10,8 @@ import tsc from 'gulp-typescript';
 import tslint from 'gulp-tslint';
 import sourcemaps from 'gulp-sourcemaps';
 import htmlToJs from 'gulp-html-to-js';
+var sassInlineSvg = require('gulp-sass-inline-svg');
+var svgmin = require('gulp-svgmin');
 
 const version = require('./package.json').version
 
@@ -23,6 +25,14 @@ let tsProject = tsc.createProject('./tsconfig.json');
 
 gulp.task('clean', () => {
   return pipe([`./build`, './tmp'], $.clean())
+});
+
+gulp.task('sass:svg', function(){
+    return gulp.src('./src/icons/seti_ui_icon/*.svg') 
+      .pipe($.svgmin()) // Recommend using svg min to optimize svg files first 
+      .pipe($.sassInlineSvg({
+        destDir: './src/styles'
+      }));
 });
 
 gulp.task('styles', () => {

@@ -7,7 +7,7 @@
 }
 
 .gitxpress-sidebar__header {
-
+	margin-right: -1px;
 }
 
 .gitxpress-sidebar__wrapper{
@@ -23,10 +23,20 @@
 }
 
 .menu-link {
-	position: absolute;
+	position: fixed;
 	top: 10px;
+	cursor: pointer;
+	background-color: #24292e
 }
 
 .gitxpress--relative {
 	position: relative;
+}
+
+.gitexpress-header-nav-link {
+	display: block;
+	padding: 5px 10px;
+	font-weight: 600;
+	line-height: 20px;
+	color: rgba(255,255,255,0.75);
 }

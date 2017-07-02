@@ -1,6 +1,7 @@
 {
     "compilerOptions": {
         "noImplicitAny": true,
+        "moduleResolution": "node",
         "removeComments": true,
         "preserveConstEnums": true,
         "sourceMap": true,
