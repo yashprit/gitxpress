@@ -46,3 +46,14 @@
 		}
 	}
 }
+
+.node-gxTreeView {
+	color: #0366d6;
+	a {
+		vertical-align: super;
+	}
+	&.list-group-item {
+		padding: 6px 3px;
+		margin: 0;
+	}
+}

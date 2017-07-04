@@ -84,6 +84,7 @@ class GitXpress {
       data: this.tree,
       showBorder: false,
       enableLinks:true,
+      levels: 0,
       expandIcon: 'gitxpress__icon gitxpress__icon--folder',
       collapseIcon: 'gitxpress__icon gitxpress__icon--folder'
     });
