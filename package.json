@@ -69,6 +69,7 @@
     "gulp-uglify": "^1.5.4",
     "gulp-zip": "^2.0.3",
     "jquery": "^3.2.1",
+    "jquery-pjax": "^2.0.1",
     "octicons": "^5.0.1",
     "preprocessify": "^1.0.1",
     "run-sequence": "^2.0.0",

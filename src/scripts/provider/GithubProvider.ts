@@ -36,10 +36,14 @@ export default class GithubProvider extends GitAbstract {
     return null;
   }
 
-  parseTree(data:any): Array<Tree> {
+  parseTree(data:any, parsedInfo:RepoParam): Array<Tree> {
     let treeObj = new Array<Tree>();
     
     let iconElement:Icon = new Icon();
+
+    const username = parsedInfo.username;
+    const repoName = parsedInfo.repo;
+    const branch = parsedInfo.branch;
 
     data.tree.forEach((value:any, key:number) => {
       if (value.path.indexOf('/') !== -1) {
@@ -53,12 +57,14 @@ export default class GithubProvider extends GitAbstract {
             if (index !== -1) {
               currentNodeOfRoot = currentNodeOfRoot[index].nodes;
             } else {
+              let pathValue = paths.slice(0, i+1).join("/");
               currentNodeOfRoot.push({
                 type: value.type,
                 path: value.path,
                 url: value.url,
                 size: value.size,
                 text: paths[i],
+                href: `/${username}/${repoName}/${value.type}/${branch}/${pathValue}`,
                 nodes: new Array<Tree>()
               })
               let index = currentNodeOfRoot.length - 1;
@@ -74,13 +80,15 @@ export default class GithubProvider extends GitAbstract {
             if (index !== -1) {
               currentNodeOfRoot = currentNodeOfRoot[index].nodes;
             } else {
+              let pathValue = paths.slice(0, i+1).join("/");
               currentNodeOfRoot.push({
                 type: value.type,
                 path: value.path,
                 url: value.url,
                 size: value.size,
                 text: paths[i],
-                nodes: new Array<Tree>()
+                nodes: new Array<Tree>(),
+                href: `/${username}/${repoName}/${value.type}/${branch}/${pathValue}`,
               })
               let index = currentNodeOfRoot.length - 1;
               currentNodeOfRoot = currentNodeOfRoot[index].nodes;
@@ -92,7 +100,8 @@ export default class GithubProvider extends GitAbstract {
             url: value.url,
             size: value.size,
             text: keyName,
-            icon: iconElement.icon(keyName)
+            icon: iconElement.icon(keyName),
+            href: `/${username}/${repoName}/${value.type}/${branch}/${value.path}`
           });
         }
       } else if(value.type === 'blob'){
@@ -102,7 +111,8 @@ export default class GithubProvider extends GitAbstract {
           url: value.url,
           size: value.size,
           text: value.path,
-          icon: iconElement.icon(value.path)
+          icon: iconElement.icon(value.path),
+          href: `/${username}/${repoName}/${value.type}/${branch}/${value.path}`
         });
       } else {
         treeObj.push({
@@ -111,7 +121,8 @@ export default class GithubProvider extends GitAbstract {
           url: value.url,
           size: value.size,
           text: value.path,
-          nodes: new Array<Tree>()
+          nodes: new Array<Tree>(),
+          href: `/${username}/${repoName}/tree/${branch}/${value.path}`
         });
       }
     });
