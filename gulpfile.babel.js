@@ -40,7 +40,7 @@ gulp.task('sass:svg', function(){
 });
 
 gulp.task('styles', () => {
-  return gulp.src('src/styles/**/*.scss')
+  return gulp.src('src/styles/index.scss')
     .pipe($.plumber())
     .pipe($.sass.sync({
       outputStyle: 'expanded',
