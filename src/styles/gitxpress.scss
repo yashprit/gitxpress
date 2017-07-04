@@ -49,7 +49,7 @@
 
 .node-gxTreeView {
 	color: #0366d6;
-	a {
+	& a {
 		vertical-align: super;
 	}
 	&.list-group-item {

@@ -11,6 +11,7 @@ class GitXpress {
   location:any;
   htmlTemplate: string;
   tree: Array<Tree>;
+  parsedInfo:RepoParam;
   
   constructor(){
     document.addEventListener('DOMContentLoaded', this.onDomReady.bind(this));
@@ -18,16 +19,21 @@ class GitXpress {
 
   onDomReady(){
 
+        //if(window.innerWidth < 1670) {
+      $("div[role='main']").addClass('push');
+    //}
+
     this.htmlTemplate = (<any>window).template['sidebar.template.html'];
     this.location = document.location;
     let provider: GitAbstract = GitFactory.createProvider(this.location.href);
-    let parsedInfo: RepoParam = provider.getRepoInformation(this.location);
+    this.parsedInfo = provider.getRepoInformation(this.location);
 
-    if(parsedInfo) {
+    if(this.parsedInfo) {
       this.updateDOM();
-      provider.loadRepo(parsedInfo, (tree:Array<Tree>) => {
+      provider.loadRepo(this.parsedInfo, (tree:Array<Tree>) => {
         this.tree = tree
         this.populateTree();
+        
       });
     } else {
       //handle error while not able to parse username and password
@@ -35,8 +41,11 @@ class GitXpress {
   }
 
   updateDOM() {
+
+
     $(document.body).append(this.htmlTemplate);
     $("#gxSideMenuLink").attr('aria-label', 'Toggle GitXpress').append(octicons['three-bars'].toSVG());
+    $("#gxBranchLink").append(`<span class="header-nav-link gitxpress__sidebar--header--action">${this.parsedInfo.branch}</span>`)
     $("#gxBranchLink").prepend(octicons['git-branch'].toSVG());
     const actionHtml = `
       <a class="header-nav-link gitxpress__sidebar--header--action" id="gxBookmarkAction">
