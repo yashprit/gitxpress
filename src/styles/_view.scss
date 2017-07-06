@@ -18,6 +18,12 @@
 		background-color: #24292e
 	}
 
+	&__action {
+		&--selected {
+			color: #fff !important;
+		}
+	}
+
 	&__sidebar {
 		z-index: 9999;
     position: fixed;
@@ -26,17 +32,23 @@
 		border-right: 1px solid #e1e4e8;
 		background-color: #FFFFFF;
 
+		&__spinner {
+			position: absolute;
+			top: 50%;
+			left: 30%;
+		}
+
 		&--header {
 			margin-right: -1px;
 			padding-left: 10px;
 			&--linkLarge {
 				display: inline-block !important;
-				width: 74%;
+				width: 65%;
 			}
 
 			&--linkSmall {
 				display: inline-block !important;
-				width: 23%;
+				width: 33%;
 			}
 
 			&--action {
@@ -56,4 +68,45 @@
 		padding: 6px 3px;
 		margin: 0;
 	}
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  position: relative;
+  margin: 100px auto;
+}
+
+.double-bounce1, .double-bounce2 {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: #24292e;
+  opacity: 0.6;
+  position: absolute;
+  top: 0;
+  left: 0;
+  
+  -webkit-animation: sk-bounce 2.0s infinite ease-in-out;
+  animation: sk-bounce 2.0s infinite ease-in-out;
+}
+
+.double-bounce2 {
+  -webkit-animation-delay: -1.0s;
+  animation-delay: -1.0s;
+}
+
+@-webkit-keyframes sk-bounce {
+  0%, 100% { -webkit-transform: scale(0.0) }
+  50% { -webkit-transform: scale(1.0) }
+}
+
+@keyframes sk-bounce {
+  0%, 100% { 
+    transform: scale(0.0);
+    -webkit-transform: scale(0.0);
+  } 50% { 
+    transform: scale(1.0);
+    -webkit-transform: scale(1.0);
+  }
 }

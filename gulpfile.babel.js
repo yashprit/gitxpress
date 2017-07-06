@@ -63,7 +63,7 @@ gulp.task('html2js', () => {
 gulp.task('vendor', () => {
   let src = [
     './src/vendor/bootstrap-treeview.js',
-    './tmp/source/js/sidebar.template.js'
+    //'./tmp/source/js/sidebar.template.js'
   ]
   return pipe(
     src,
@@ -80,7 +80,7 @@ gulp.task('ts', () => {
 
 gulp.task('bundle-js',  () => {
   return browserify({
-    entries: './tmp/source/js/GitXpress.js',
+    entries: './tmp/source/js/Main.js',
     debug: true
   })
   .transform('babelify', { presets: ['es2015'] })
@@ -102,7 +102,7 @@ gulp.task('bundle-js',  () => {
 });
 
 gulp.task('js', (cb) => {
-  runSequence('html2js', 'ts', 'bundle-js', 'vendor', cb)
+  runSequence(/*'html2js',*/ 'ts', 'bundle-js', 'vendor', cb)
 });
 
 gulp.task('build', (cb) => {
