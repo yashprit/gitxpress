@@ -11,7 +11,7 @@ export default class Settings extends IView {
   }
 
   componentDidRender(){
-    console.log('empty did render')
+    $('#gxHeaderArea').html(`<span class="header-nav-link gitxpress__sidebar--header--action">Settings</span>`);
   }
 
   componentWillRender(){

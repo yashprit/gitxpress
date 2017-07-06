@@ -50,6 +50,7 @@ export default class TreeView extends IView {
   }
 
   populateTree = (parsedRepoInfo:TreeInfo):void => {
+    $('#gxHeaderArea').html(`<span class="header-nav-link gitxpress__sidebar--header--action">Tree</span>`);
     $('#gxTreeView').treeview({
       data: parsedRepoInfo.tree,
       showBorder: false,

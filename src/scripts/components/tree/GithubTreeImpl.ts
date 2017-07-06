@@ -14,7 +14,7 @@ const GIT_KEYWORD = [
   'new', 'integrations', 'gist', 'business',
   'mirrors', 'open-source', 'personal',
   'pricing', 'followers', 'following', 'repositories'
-]
+];
 
 export default class GithubProvider extends TreeInterface {
 
@@ -134,6 +134,42 @@ export default class GithubProvider extends TreeInterface {
         });
       }
     });
+
+    function sortNodesAndChildren(nodes) {
+      nodes.sort((a, b) => {
+        if(a.type === b.type) {
+          let nameA = a.text.toUpperCase(); 
+          let nameB = b.text.toUpperCase(); 
+          if (nameA < nameB) {
+            return -1;
+          }
+          
+          if (nameA > nameB) {
+            return 1;
+          }
+
+          return 0;
+        } else {
+          if(a.type === 'tree') {
+            return -1
+          }
+
+          if(b.type === 'tree') {
+            return 1
+          }
+
+          return 0;
+        }
+      });
+      nodes.forEach(function (node) {
+        if (node.nodes) {
+          sortNodesAndChildren(node.nodes);
+        }
+      })
+    }
+
+    sortNodesAndChildren(treeObj);
+
     return treeObj;
   }
   

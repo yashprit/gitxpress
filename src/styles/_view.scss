@@ -20,7 +20,7 @@
 
 	&__action {
 		&--selected {
-			color: #fff !important;
+			color: #FFFFFF !important;
 		}
 	}
 
@@ -29,14 +29,8 @@
     position: fixed;
     left: -301px;
     width: 301px;
-		border-right: 1px solid #e1e4e8;
+		border-right: 1px solid #E1E4E8;
 		background-color: #FFFFFF;
-
-		&__spinner {
-			position: absolute;
-			top: 50%;
-			left: 30%;
-		}
 
 		&--header {
 			margin-right: -1px;
