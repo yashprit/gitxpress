@@ -16,7 +16,12 @@
 	}
 
   &--editorconfig:before {
-    @include icon;
+    width: 16px;
+    height: 18px;
+    background-size: 20px 18px;
+    margin-left: -4px;
+    content: " ";
+    display: inline-block;
     background-image: inline-svg('editorconfig');
   }
 
@@ -26,52 +31,102 @@
 	}
 
   &--gitignore:before {
-    @include icon;
+    width: 16px;
+    height: 18px;
+    background-size: 20px 18px;
+    margin-left: -4px;
+    content: " ";
+    display: inline-block;
     background-image: inline-svg('git_ignore');
 	}
 
   &--github:before {
-    @include icon;
+        width: 16px;
+    height: 18px;
+    background-size: 20px 18px;
+    margin-left: -4px;
+    content: " ";
+    display: inline-block;
     background-image: inline-svg('github', #24292e);
 	}
 
   &--license:before {
-    @include icon;
+        width: 16px;
+    height: 18px;
+    background-size: 20px 18px;
+    margin-left: -4px;
+    content: " ";
+    display: inline-block;
     background-image: inline-svg('license');
 	}
 
   &--markdown:before {
-    @include icon;
+        width: 16px;
+    height: 18px;
+    background-size: 20px 18px;
+    margin-left: -4px;
+    content: " ";
+    display: inline-block;
     background-image: inline-svg('markdown');
 	}
 
   &--javascript:before {
-    @include icon;
+        width: 16px;
+    height: 18px;
+    background-size: 20px 18px;
+    margin-left: -4px;
+    content: " ";
+    display: inline-block;
     background-image: inline-svg('javascript');
 	}
 
   &--json:before {
-    @include icon;
+        width: 16px;
+    height: 18px;
+    background-size: 20px 18px;
+    margin-left: -4px;
+    content: " ";
+    display: inline-block;
     background-image: inline-svg('json');
 	}
 
   &--typescript:before {
-    @include icon;
+        width: 16px;
+    height: 18px;
+    background-size: 20px 18px;
+    margin-left: -4px;
+    content: " ";
+    display: inline-block;
     background-image: inline-svg('typescript', #294e80);
 	}
 
   &--image:before {
-    @include icon;
+        width: 16px;
+    height: 18px;
+    background-size: 20px 18px;
+    margin-left: -4px;
+    content: " ";
+    display: inline-block;
     background-image: inline-svg('image');
 	}
 
   &--newFile:before {
-    @include icon;
+        width: 16px;
+    height: 18px;
+    background-size: 20px 18px;
+    margin-left: -4px;
+    content: " ";
+    display: inline-block;
     background-image: inline-svg('new-file');
 	}
 
   &--babel:before {
-    @include icon;
+    width: 16px;
+    height: 18px;
+    background-size: 20px 18px;
+    margin-left: -4px;
+    content: " ";
+    display: inline-block;
     background-image: inline-svg('babel');
 	}
 }
