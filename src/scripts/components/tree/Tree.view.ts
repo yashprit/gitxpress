@@ -47,10 +47,11 @@ export default class TreeView extends IView {
 
   handleFileSelect = (e) => {
     this.provider.selectFile(e, '#js-repo-pjax-container');
+    e.preventDefault();
   }
 
   populateTree = (parsedRepoInfo:TreeInfo):void => {
-    $('#gxHeaderArea').html(`<span class="header-nav-link gitxpress__sidebar--header--action">Tree</span>`);
+    $('#gxHeaderArea').html(`<span class="header-navlink gitxpress__sidebar--header--action">Tree</span>`);
     $('#gxTreeView').treeview({
       data: parsedRepoInfo.tree,
       showBorder: false,

@@ -4,6 +4,7 @@
   "manifest_version": 2,
   "description": "Browser plugin for creating file explorer tree and bookmarking GitHub Repository",
   "default_locale": "en",
+  "content_security_policy":"script-src 'self' https://www.gstatic.com/ https://*.firebaseio.com https://www.googleapis.com; object-src 'self'",
   "background": {
     "scripts": [
       "js/background.js"

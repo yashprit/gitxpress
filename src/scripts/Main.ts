@@ -16,9 +16,9 @@ const template:string = `
       <div class="header gitxpress__sidebar--header" id="gxSidebarHeader">
         <div class="gitxpress__sidebar--header--linkLarge" id="gxHeaderArea"></div>
         <div class="gitxpress__sidebar--header--linkSmall" id="gxActions">
-          <a class="header-nav-link gitxpress__sidebar--header--action" data-page="tree">{{branchIcon}}</a>
-          <a class="header-nav-link gitxpress__sidebar--header--action" data-page="bookmark">{{bookMarkIcon}}</a>
-          <a class="header-nav-link gitxpress__sidebar--header--action" data-page="settings">{{settingIcon}}</a>
+          <a class="header-navlink gitxpress__sidebar--header--action" data-page="tree">{{branchIcon}}</a>
+          <a class="header-navlink gitxpress__sidebar--header--action" data-page="bookmark">{{bookMarkIcon}}</a>
+          <a class="header-navlink gitxpress__sidebar--header--action" data-page="settings">{{settingIcon}}</a>
         </div>
       </div>
       <div id='gxContentArea'></div>
@@ -26,12 +26,40 @@ const template:string = `
   </div>
 `;
 
+const config = {
+  apiKey: '<YOUR_API_KEY>',
+  databaseURL: '<YOUR_DATABASE_URL>',
+  storageBucket: '<YOUR_STORAGE_BUCKET_NAME>'
+};
+
+declare var firebase;
+
+firebase.initializeApp(config);
+
 class Main extends IView {
   private store:Store;
 
   constructor(){
     super('body', template);
     document.addEventListener('DOMContentLoaded', this.bootStrap);
+    firebase.auth().onAuthStateChanged(this.onFirebaseAuth);
+  }
+
+  onFirebaseAuth = (user:any):void => {
+    if (user) {
+      var displayName = user.displayName;
+      var email = user.email;
+      var emailVerified = user.emailVerified;
+      var photoURL = user.photoURL;
+      var isAnonymous = user.isAnonymous;
+      var uid = user.uid;
+      var providerData = user.providerData;
+      let linkStatus:string = octicons['issue-thumbsup'].toSVG();
+      $('#gxFirebaseLinkStatus').html(linkStatus);
+    } else {
+      let linkStatus:string = octicons['issue-thumbsdown'].toSVG();
+      $('#gxFirebaseLinkStatus').html(linkStatus);
+    }
   }
 
   bootStrap = ():void => {
