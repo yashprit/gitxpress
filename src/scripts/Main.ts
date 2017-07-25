@@ -46,20 +46,12 @@ class Main extends IView {
   }
 
   onFirebaseAuth = (user:any):void => {
-    if (user) {
-      var displayName = user.displayName;
-      var email = user.email;
-      var emailVerified = user.emailVerified;
-      var photoURL = user.photoURL;
-      var isAnonymous = user.isAnonymous;
-      var uid = user.uid;
-      var providerData = user.providerData;
-      let linkStatus:string = octicons['issue-thumbsup'].toSVG();
-      $('#gxFirebaseLinkStatus').html(linkStatus);
-    } else {
-      let linkStatus:string = octicons['issue-thumbsdown'].toSVG();
-      $('#gxFirebaseLinkStatus').html(linkStatus);
-    }
+    this.store.dispatch({
+      type: 'FIREBASE_STATUS',
+      payload: {
+        user: user
+      }
+    });
   }
 
   bootStrap = ():void => {
@@ -69,7 +61,8 @@ class Main extends IView {
   actions(){
     return {
       'PAGE_CHANGE': this.openPage,
-      'INIT': this.initView
+      'INIT': this.initView,
+      'FIREBASE_STATUS': this.firebaseAuthenticateAction
     }
   }
 
@@ -86,6 +79,19 @@ class Main extends IView {
       branchIcon: branchIcon
     }, 'append');
     this.openPage(state, actionType);
+  }
+
+  firebaseAuthenticateAction = (state:any) => {
+    console.log(state);
+    if(state.page === 'settings') {
+      if(state.user) {
+        let linkStatus:string = octicons['issue-thumbsup'].toSVG();
+        $('#gxFirebaseLinkStatus').html(linkStatus);
+      } else {
+        let linkStatus:string = octicons['issue-thumbsdown'].toSVG();
+        $('#gxFirebaseLinkStatus').html(linkStatus);
+      }
+    }   
   }
 
   componentDidRender(){
