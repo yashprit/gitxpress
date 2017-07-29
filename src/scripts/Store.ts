@@ -1,14 +1,15 @@
-export interface Action {
+interface Action {
   type:string;
   payload?: object
 }
 
-export class Storage {
-  set(key:string, val:any):void {
-    localStorage.setItem(key, JSON.stringify(val));
-  }
 
-  get(key: string):any {
+let Storage = {
+  set: function(key:string, val:any) {
+    localStorage.setItem(key, JSON.stringify(val));
+  },
+
+  get: function(key: string):any {
     let value:string = localStorage.getItem(key);
     try {
       let jsonValue:object = JSON.parse(value);
@@ -19,48 +20,47 @@ export class Storage {
   }
 }
 
-export function compareObj(a:object, b:object):boolean {
+function compareObj(a:object, b:object):boolean {
   return JSON.stringify(a) === JSON.stringify(b)
 }
 
-export default class Store {
-  private currentState:object;
-  private actions: object;
-  private storage: Storage;
+export {
+  Storage,
+  compareObj,
+  Action
+}
 
-  constructor(actions:object) {
-    this.storage = new Storage();
-    this.actions = actions;
-    this.currentState = {};
+export default function createStore(reducer:any, intialState:any){
+  let state = intialState;
+  let subscribers = [];
 
-    this.dispatch({
-      type: 'INIT',
-      payload: this.storage.get('gxStore') || {
-        page: 'tree',
-        sidebarWith: 301
+  function subscribe(listener) {
+    subscribers.push(listener);
+
+    var unsubscribed = false;
+
+    return function() {
+      if (!unsubscribed) {
+        subscribers.splice(subscribers.indexOf(listener), 1);
+        unsubscribed = true;
+        return true;
       }
+      return false;
+    }
+  }
+
+  function dispatch(action){
+    state = reducer(state, action);
+
+    subscribers.forEach((subscriber) => {
+      subscriber(state, action.type);
     });
   }
 
-  _setOrUpdateCurrentState(payload:any):boolean{
-    let newState = Object.assign({}, this.currentState, payload || {});
-
-    if(compareObj(this.currentState, newState)) {
-      return false
-    } else {
-      this.currentState = newState;
-      this.storage.set('gxStore', this.currentState);
-      return true;
-    }
+  function getState(){
+    return state;
   }
 
-  dispatch(action:Action) {
-    if(this._setOrUpdateCurrentState(action.payload)){
-      (<any>this.actions)[action.type](this.currentState, action.type);
-    }
-  }
+  return {dispatch, subscribe, getState};
 
-  get state(){
-    return this.currentState;
-  }
 }

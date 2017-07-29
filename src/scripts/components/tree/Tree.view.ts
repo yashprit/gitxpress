@@ -22,7 +22,7 @@ export default class TreeView extends IView {
   private parsedInfo:RepoParam;
   private location:any;
 
-  constructor() {
+  constructor(state:any) {
     super('#gxContentArea', template);
     this.location = document.location;
     this.provider = TreeFactory.createProvider(this.location.href);

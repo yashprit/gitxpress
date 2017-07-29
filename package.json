@@ -76,5 +76,8 @@
     "typescript": "^2.4.1",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0"
+  },
+  "dependencies": {
+    "firebase": "^4.2.0"
   }
 }

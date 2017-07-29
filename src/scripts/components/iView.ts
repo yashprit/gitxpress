@@ -16,7 +16,7 @@ export default abstract class iView {
   abstract componentDidRender() : void;
 
   compile(params:object) {
-    let re = /{{(.+?)}}/g, 
+    let re = /<%(.+?)%>/g, 
 		  reExp = /(^( )?(var|if|for|else|switch|case|break|{|}|;))(.*)?/g, 
 		  code = 'with(obj) { var r=[];\n', 
 		  cursor = 0, 
@@ -45,9 +45,9 @@ export default abstract class iView {
   }
 
   render(params:object, functionName:string){
-    this.componentWillRender();
+    this.componentWillRender && this.componentWillRender();
     this.compile(params);
     (<any>$(this.selector))[functionName](this.html);
-    this.componentDidRender();
+    this.componentDidRender && this.componentDidRender();
   }
 }

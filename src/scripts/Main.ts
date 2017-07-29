@@ -1,30 +1,8 @@
-/// <reference path="../../typings.d.ts" />
-
-import Store from './Store';
-import IView from './components/IView';
-import TreeView from './components/tree/Tree.View';
-import Bookmark from './components/bookmark/Bookmark.View';
-import Settings from './components/settings/Settings.View';
-import $ from 'jquery';
-import octicons from "octicons";
-import 'bigslide';
-
-const template:string = `
-  <div class="gitxpress" id="gxMainView">
-    <a class="push gitxpress--toogle-link tooltipped-s js-menu-target" id="gxSideMenuLink">{{toggleIcon}}</a>
-    <div id="menu" class="gitxpress__sidebar">
-      <div class="header gitxpress__sidebar--header" id="gxSidebarHeader">
-        <div class="gitxpress__sidebar--header--linkLarge" id="gxHeaderArea"></div>
-        <div class="gitxpress__sidebar--header--linkSmall" id="gxActions">
-          <a class="header-navlink gitxpress__sidebar--header--action" data-page="tree">{{branchIcon}}</a>
-          <a class="header-navlink gitxpress__sidebar--header--action" data-page="bookmark">{{bookMarkIcon}}</a>
-          <a class="header-navlink gitxpress__sidebar--header--action" data-page="settings">{{settingIcon}}</a>
-        </div>
-      </div>
-      <div id='gxContentArea'></div>
-    </div>
-  </div>
-`;
+import createStore, {Storage} from './Store';
+import Reducer from './Reducer';
+import Sidebar from './Sidebar';
+import * as firebase from 'firebase';
+import BookmarkPopupView from './components/bookmark/BookmarkPopup.View';
 
 const config = {
   apiKey: '<YOUR_API_KEY>',
@@ -32,16 +10,39 @@ const config = {
   storageBucket: '<YOUR_STORAGE_BUCKET_NAME>'
 };
 
-declare var firebase;
-
 firebase.initializeApp(config);
 
-class Main extends IView {
-  private store:Store;
+export default class Main {
+
+  private store:any;
+  private sidebar:Sidebar;
+  private bookmarkPopup:BookmarkPopupView;
 
   constructor(){
-    super('body', template);
-    document.addEventListener('DOMContentLoaded', this.bootStrap);
+    document.addEventListener('DOMContentLoaded', this.bootstrap);
+  }
+
+  bootstrap = ():void => {
+    let savedState = Storage.get('__gitxpress__');
+    let intialState = savedState && Object.keys(savedState).length > 0? savedState : {page: 'tree', tags: []};
+    this.store = createStore(Reducer, intialState);
+    this.store.subscribe(this.storeEvent);
+    //make sure page is changed as per last visited
+    let currentState = this.store.getState();
+
+    this.sidebar = new Sidebar({
+      onPageChange: this.openPage.bind(this),
+      state: currentState
+    });
+
+    this.bookmarkPopup = new BookmarkPopupView({
+      state: currentState,
+      addTag: this.onTagAdd.bind(this)
+    });
+    this.bookmarkPopup.initView();
+
+    this.sidebar.initView();
+    this.store.dispatch({type: 'PAGE_CHANGE', payload:{page: currentState.page}});
     firebase.auth().onAuthStateChanged(this.onFirebaseAuth);
   }
 
@@ -54,61 +55,34 @@ class Main extends IView {
     });
   }
 
-  bootStrap = ():void => {
-    this.store = new Store(this.actions());
-  }
+  storeEvent = (state:any, actionType:string):void => {
+    Storage.set('__gitxpress__', state);
+    if(actionType === 'PAGE_CHANGE') {
+      this.sidebar.renderRoute(state);
+    }
 
-  actions(){
-    return {
-      'PAGE_CHANGE': this.openPage,
-      'INIT': this.initView,
-      'FIREBASE_STATUS': this.firebaseAuthenticateAction
+    if(actionType === 'FIREBASE_STATUS') {
+      console.log(state);
+    }
+
+    if(actionType === 'ADD_TAG') {
+      this.bookmarkPopup.updateTags(state);
     }
   }
 
-  initView = (state:any, actionType:string):void => {
-    let toggleIcon:string = octicons['three-bars'].toSVG();
-    let bookMarkIcon:string = octicons['bookmark'].toSVG();
-    let settingIcon:string = octicons['gear'].toSVG();
-    let branchIcon:string = octicons['git-branch'].toSVG();
-
-    this.render({
-      toggleIcon: toggleIcon,
-      settingIcon: settingIcon,
-      bookMarkIcon: bookMarkIcon,
-      branchIcon: branchIcon
-    }, 'append');
-    this.openPage(state, actionType);
-  }
-
-  firebaseAuthenticateAction = (state:any) => {
-    console.log(state);
-    if(state.page === 'settings') {
-      if(state.user) {
-        let linkStatus:string = octicons['issue-thumbsup'].toSVG();
-        $('#gxFirebaseLinkStatus').html(linkStatus);
-      } else {
-        let linkStatus:string = octicons['issue-thumbsdown'].toSVG();
-        $('#gxFirebaseLinkStatus').html(linkStatus);
+  onTagAdd = (tagValue:string):void => {
+    let currentState = this.store.getState();
+    let tags = currentState.tags;
+    tags.push(tagValue);
+    this.store.dispatch({
+      type: 'ADD_TAG',
+      payload: {
+        tags: tags
       }
-    }   
+    })
   }
 
-  componentDidRender(){
-    $('#gxSideMenuLink').bigSlide({
-      state: true,
-      menuWidth: '301px',
-      menu: ('#menu')
-    });
-    $(document).on('click', '.gitxpress__sidebar--header--action', this.showPageHandler);
-  }
-
-  componentWillRender(){
-    console.log("empty will render")
-  }
-
-  showPageHandler = (e:any):void => {
-    let currentPage = $(e.currentTarget).data('page');
+  openPage = (currentPage:string):void => {
     this.store.dispatch({
       type: 'PAGE_CHANGE',
       payload: {
@@ -116,22 +90,7 @@ class Main extends IView {
       }
     })
   }
-
-  openPage = (state:any, actionType:string):void => {
-    $('.gitxpress__sidebar--header--action').removeClass('gitxpress__action--selected');
-    $(`a[data-page='${state.page}']`).addClass('gitxpress__action--selected');
-
-    if(state.page === 'tree') {
-      let treeView = new TreeView();
-      treeView.render({}, 'html');
-    } else if(state.page === 'bookmark') {
-      let bookmark = new Bookmark();
-      bookmark.render({}, 'html');
-    } else if(state.page === 'settings') {
-      let settings = new Settings();
-      settings.render({}, 'html');
-    }
-  }
 }
+
 
 (<any>window).gitxpress = new Main();

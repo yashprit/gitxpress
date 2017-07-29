@@ -6,7 +6,7 @@ export default class BookmarkView extends IView {
 
   private location:any;
 
-  constructor() {
+  constructor(state:any) {
     super('#gxContentArea', template);
   }
 
