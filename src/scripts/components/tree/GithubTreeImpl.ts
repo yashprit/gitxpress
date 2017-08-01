@@ -1,5 +1,5 @@
 import TreeInterface from './TreeInterface';
-import {RepoParam, Tree} from './FunctionalInterface';
+import {RepoParam, Tree} from '../../FunctionalInterface';
 import $ from 'jquery';
 import Icon from '../../Icon';
 

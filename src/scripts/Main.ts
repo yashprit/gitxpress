@@ -24,7 +24,7 @@ export default class Main {
 
   bootstrap = ():void => {
     let savedState = Storage.get('__gitxpress__');
-    let intialState = savedState && Object.keys(savedState).length > 0? savedState : {page: 'tree', tags: []};
+    let intialState = savedState && Object.keys(savedState).length > 0? savedState : {page: 'tree', allTags: [], tags: {}};
     this.store = createStore(Reducer, intialState);
     this.store.subscribe(this.storeEvent);
     //make sure page is changed as per last visited

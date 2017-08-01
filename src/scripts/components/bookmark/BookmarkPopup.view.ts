@@ -1,5 +1,7 @@
 import IView from '../IView';
 import octicons from "octicons";
+import $ from 'jquery';
+import BookmarkService from './BookmarkService';
 
 const tagIcon:string = octicons['three-bars'].toSVG();
 
@@ -21,14 +23,7 @@ const template:string = `
           <div class="select-menu-list js-navigation-container js-active-navigation-container" role="menu">
             <div class="select-menu-item" role="menuitem" tabindex="0" style="padding: 10px;">
               <div class="select-menu-item-text">
-                <ul id="gxAvaiableTags" class="gitxpress__tag-popup--tags">
-                <%for(var index in this.tags){%>
-                  <li class='md-checkbox'>
-                    <input id="gxtag_<%this.tags[index]%>" type="checkbox">
-                    <label for="gxtag_<%this.tags[index]%>" class=""><%this.tags[index]%></label>
-                  </li>
-                <%}%>
-                </ul>
+                <ul id="gxAvaiableTags" class="gitxpress__tag-popup--tags"></ul>
                 <div class="gitxpress__tag-popup--tag-box">
                   <input type="text" placeholder="enter tag name, press enter" id="gxNewTagValue">
                 </div>
@@ -46,15 +41,20 @@ export default class BookmarkPopupView extends IView {
 
   private location:any;
   private props:any;
+  private service:BookmarkService;
 
   constructor(props:any) {
     super('.pagehead-actions', template);
     this.props = props;
   }
 
+  componentWillRender(){
+    this.service = BookmarkService.getInstance();
+  }
+
   componentDidRender(){
-    $('#gxAddTag').on("click", this.onTagAdd)
-    $('#gxNewTagValue').on("keypress", this.onTagAdd)
+    $('#gxAddTag').on("click", this.onTagAdd);
+    $('#gxNewTagValue').on("keypress", this.onTagAdd);
   }
 
   onTagAdd = (e) => {
@@ -76,13 +76,13 @@ export default class BookmarkPopupView extends IView {
   updateTags(state:any) {
     let stateHtml = [];
     for(let i = 0; i < state.tags.length; i++) {
-      stateHtml.push(`<li class='md-checkbox'><input id="" type="checkbox"><label for="i2" class=""><%this.tags[index]%></label></li>`);
+      stateHtml.push(`
+        <li class='md-checkbox'>
+          <input id="gxtag_${state.tags[i]}" type="checkbox">
+          <label for="gxtag_${state.tags[i]}">${state.tags[i]}</label>
+        </li>`
+      );
     }
     $('#gxAvaiableTags').html(stateHtml.join(''));
   }
-
-  componentWillRender(){
-
-  }
-
 }

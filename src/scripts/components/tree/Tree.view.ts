@@ -3,7 +3,7 @@ import TreeFactory from './TreeFactory';
 import TreeInterface from './TreeInterface';
 import $ from 'jquery';
 import 'jquery-pjax';
-import {Tree, RepoParam, TreeInfo} from './FunctionalInterface';
+import {Tree, RepoParam, TreeInfo} from '../../FunctionalInterface';
 
 const template:string = `
   <div class="gitxpress--sidebar__tree" id="gxTreeView">
