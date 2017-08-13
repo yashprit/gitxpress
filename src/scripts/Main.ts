@@ -3,6 +3,8 @@ import Reducer from './Reducer';
 import Sidebar from './Sidebar';
 import * as firebase from 'firebase';
 import BookmarkPopupView from './components/bookmark/BookmarkPopup.View';
+import TreeFactory from './components/tree/TreeFactory';
+import TreeInterface from './components/tree/TreeInterface';
 
 const config = {
   apiKey: '<YOUR_API_KEY>',
@@ -17,6 +19,8 @@ export default class Main {
   private store:any;
   private sidebar:Sidebar;
   private bookmarkPopup:BookmarkPopupView;
+  private gitService:TreeInterface;
+  private location:any;
 
   constructor(){
     document.addEventListener('DOMContentLoaded', this.bootstrap);
@@ -34,6 +38,10 @@ export default class Main {
       onPageChange: this.openPage.bind(this),
       state: currentState
     });
+
+    this.location = document.location;
+
+    this.gitService = TreeFactory.createProvider(this.location.href);
 
     this.bookmarkPopup = new BookmarkPopupView({
       state: currentState,

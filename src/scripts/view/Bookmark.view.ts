@@ -1,4 +1,4 @@
-import IView from '../IView';
+import IView from './IView';
 
 const template:string = `<div class="gitxpress--sidebar__settings" id="gxBookmarkView">BookMark</div>`;
 

@@ -1,7 +1,7 @@
-import TreeInterface from './TreeInterface';
-import {RepoParam, Tree} from '../../FunctionalInterface';
+import Service from './Service';
+import {RepoParam, Tree} from './FunctionalInterface';
 import $ from 'jquery';
-import Icon from '../../Icon';
+import Icon from '../Icon';
 
 const GIT_KEYWORD = [
   'settings', 'orgs', 'organizations',
@@ -16,7 +16,7 @@ const GIT_KEYWORD = [
   'pricing', 'followers', 'following', 'repositories'
 ];
 
-export default class GithubProvider extends TreeInterface {
+export default class GithubProvider extends Service {
 
   private static instance:GithubProvider;
 

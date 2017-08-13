@@ -1,25 +1,12 @@
-import { Storage } from '../../Store';
-import { RepoParam } from '../../FunctionalInterface';
+//this is main service, define eveything which is common to entire application
+import { RepoParam, Tag, TreeInfo, Tree } from './FunctionalInterface';
+import Storage from './Storage';
 
-interface Tag {
-  key: string,
-  repos: Array<string>
-}
-
-export default class BookmarkService {
-
-  private static instance:BookmarkService;
+export default abstract class Service {
 
   private tags:Array<Tag>;
 
-  static getInstance(){
-    if (!BookmarkService.instance) {
-      BookmarkService.instance = new BookmarkService();
-    }
-    return BookmarkService.instance;
-  }
-
-  getAllTags(){
+   getAllTags(){
     let currentState = Storage.get('__gitxpress__');
 
     let isUserAuthenticated = currentState.isFirebaseAuthenticated;
@@ -61,4 +48,25 @@ export default class BookmarkService {
       return acc;
     }, []);
   }
+
+  abstract loadRepo(parsedInfo:RepoParam, callback:any) :void;
+  abstract getRepoInformation(url:string): RepoParam;
+  abstract parseTree(data:any, parsedInfo:RepoParam) :Array<Tree>; 
+  public parsedTree:TreeInfo;
+  _load = (parsedInfo:RepoParam, callback:any) => {
+    const url = `https://api.github.com/repos/${parsedInfo.username}/${parsedInfo.repo}/git/trees/${parsedInfo.branch}?recursive=1`
+    $.getJSON(url, (data:any) => {
+      let parsedTreeObj:Array<Tree> =  this.parseTree(data, parsedInfo);
+      this.parsedTree = {
+        repoInfo: parsedInfo,
+        tree: parsedTreeObj
+      }
+      callback(this.parsedTree);
+    });
+  }
+
+  selectFile(e:any, container:string){
+    window.open(e, '_blank');
+  }
+
 }

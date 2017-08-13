@@ -1,9 +1,7 @@
-import IView from '../IView';
-import TreeFactory from './TreeFactory';
-import TreeInterface from './TreeInterface';
+import IView from './IView';
 import $ from 'jquery';
 import 'jquery-pjax';
-import {Tree, RepoParam, TreeInfo} from '../../FunctionalInterface';
+import {TreeInfo, Service, RepoParam} from '../service';
 
 const template:string = `
   <div class="gitxpress--sidebar__tree" id="gxTreeView">
@@ -16,16 +14,18 @@ const template:string = `
   </div>
 `;
 
+const header:string = `
+  <span class="header-navlink gitxpress__sidebar--header--action">Tree</span>
+`
+
 export default class TreeView extends IView {
   
-  private provider:TreeInterface;
+  private provider:Service;
   private parsedInfo:RepoParam;
-  private location:any;
 
-  constructor(state:any) {
+  constructor(state:any, service:Service) {
     super('#gxContentArea', template);
-    this.location = document.location;
-    this.provider = TreeFactory.createProvider(this.location.href);
+    this.provider = service;
     this.parsedInfo = this.provider.getRepoInformation(this.location);
   }
 
@@ -51,15 +51,16 @@ export default class TreeView extends IView {
   }
 
   populateTree = (parsedRepoInfo:TreeInfo):void => {
-    $('#gxHeaderArea').html(`<span class="header-navlink gitxpress__sidebar--header--action">Tree</span>`);
-    $('#gxTreeView').treeview({
+    $('#gxHeaderArea').html(header);
+    const treeConfig = {
       data: parsedRepoInfo.tree,
       showBorder: false,
       enableLinks:true,
       levels: 0,
       expandIcon: 'gitxpress__icon gitxpress__icon--folder',
       collapseIcon: 'gitxpress__icon gitxpress__icon--folder'
-    });
+    }
+    $('#gxTreeView').treeview(treeConfig);
     $(document).on('click', '.node-gxTreeView > a', this.handleFileSelect);
   }
 }

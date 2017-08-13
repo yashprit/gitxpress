@@ -1,5 +1,4 @@
-import IView from '../IView';
-import Service from './SettingService';
+import IView from './IView';
 
 const template:string = `
   <div class="gitxpress--sidebar--settings" id="gxSettingsView">
@@ -12,11 +11,8 @@ const template:string = `
 
 export default class Settings extends IView {
 
-  private provider:Service;
-
   constructor(state:any) {
     super('#gxContentArea', template);
-    this.provider = Service.getInstance();
   }
 
   componentDidRender(){
@@ -24,6 +20,6 @@ export default class Settings extends IView {
   }
 
   componentWillRender(){
-
+    console.log("component will render");
   }
 }

@@ -1,7 +1,6 @@
-import IView from '../IView';
+import IView from './IView';
 import octicons from "octicons";
 import $ from 'jquery';
-import BookmarkService from './BookmarkService';
 
 const tagIcon:string = octicons['three-bars'].toSVG();
 
@@ -41,7 +40,6 @@ export default class BookmarkPopupView extends IView {
 
   private location:any;
   private props:any;
-  private service:BookmarkService;
 
   constructor(props:any) {
     super('.pagehead-actions', template);
@@ -49,7 +47,7 @@ export default class BookmarkPopupView extends IView {
   }
 
   componentWillRender(){
-    this.service = BookmarkService.getInstance();
+    console.log("component will render")
   }
 
   componentDidRender(){

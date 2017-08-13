@@ -19,3 +19,13 @@ export interface TreeInfo {
   repoInfo: RepoParam,
   tree: Array<Tree>
 }
+
+export interface Tag {
+  key: string,
+  repos: Array<string>
+}
+
+export interface Action {
+  type:string;
+  payload?: object
+}
