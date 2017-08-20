@@ -20,15 +20,22 @@ export default class GithubProvider extends Service {
 
   private static instance:GithubProvider;
 
-  static getInstance() {
+  private url:any;
+
+  constructor(url:string) {
+    super();
+    this.url = url;
+  }
+
+  static getInstance(url:string) {
     if (!GithubProvider.instance) {
-      GithubProvider.instance = new GithubProvider();
+      GithubProvider.instance = new GithubProvider(url);
     }
     return GithubProvider.instance;
   }
 
-  getRepoInformation(url: any): RepoParam {
-    let paths = url.pathname.split('/');
+  getRepoInformation(): RepoParam {
+    let paths = this.url.pathname.split('/');
     let username = paths[1];
     let repo = paths[2];
 

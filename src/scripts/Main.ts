@@ -1,10 +1,7 @@
-import createStore, {Storage} from './Store';
-import Reducer from './Reducer';
-import Sidebar from './Sidebar';
+import { createStore, Storage, Reducer, GitFactory, Service } from './service';
+import Sidebar from './view/Sidebar';
 import * as firebase from 'firebase';
-import BookmarkPopupView from './components/bookmark/BookmarkPopup.View';
-import TreeFactory from './components/tree/TreeFactory';
-import TreeInterface from './components/tree/TreeInterface';
+import BookmarkPopupView from './view/BookmarkPopup.View';
 
 const config = {
   apiKey: '<YOUR_API_KEY>',
@@ -19,7 +16,7 @@ export default class Main {
   private store:any;
   private sidebar:Sidebar;
   private bookmarkPopup:BookmarkPopupView;
-  private gitService:TreeInterface;
+  private gitService:Service;
   private location:any;
 
   constructor(){
@@ -27,29 +24,33 @@ export default class Main {
   }
 
   bootstrap = ():void => {
+    this.location = document.location;
+
+    this.gitService = GitFactory.createProvider(this.location);
+
+    let tags = this.gitService.getAllTags();
+
     let savedState = Storage.get('__gitxpress__');
-    let intialState = savedState && Object.keys(savedState).length > 0? savedState : {page: 'tree', allTags: [], tags: {}};
+    let intialState = savedState && Object.keys(savedState).length > 0? savedState : {page: 'tree'};
     this.store = createStore(Reducer, intialState);
     this.store.subscribe(this.storeEvent);
-    //make sure page is changed as per last visited
+
     let currentState = this.store.getState();
 
     this.sidebar = new Sidebar({
       onPageChange: this.openPage.bind(this),
-      state: currentState
+      state: currentState,
+      provider: this.gitService
     });
-
-    this.location = document.location;
-
-    this.gitService = TreeFactory.createProvider(this.location.href);
+    this.sidebar.initView();
 
     this.bookmarkPopup = new BookmarkPopupView({
-      state: currentState,
-      addTag: this.onTagAdd.bind(this)
+      state: tags,
+      addTag: this.onTagAdd.bind(this),
+      provider: this.gitService
     });
     this.bookmarkPopup.initView();
 
-    this.sidebar.initView();
     this.store.dispatch({type: 'PAGE_CHANGE', payload:{page: currentState.page}});
     firebase.auth().onAuthStateChanged(this.onFirebaseAuth);
   }

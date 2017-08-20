@@ -1,9 +1,9 @@
-/// <reference path="../../typings.d.ts" />
+/// <reference path="../../../typings.d.ts" />
 
-import IView from './components/IView';
-import TreeView from './components/tree/Tree.View';
-import Bookmark from './components/bookmark/Bookmark.View';
-import Settings from './components/settings/Settings.View';
+import IView from './IView';
+import TreeView from './Tree.View';
+import Bookmark from './Bookmark.View';
+import Settings from './Settings.View';
 import $ from 'jquery';
 import octicons from "octicons";
 import 'bigslide';
@@ -58,7 +58,6 @@ export default class Sidebar extends IView {
 
   componentWillRender(){
     //render bookmark
-    
   }
 
   showPageHandler(e){
@@ -71,7 +70,7 @@ export default class Sidebar extends IView {
     $(`a[data-page='${state.page}']`).addClass('gitxpress__action--selected');
 
     if(state.page === 'tree') {
-      let treeView = new TreeView(state);
+      let treeView = new TreeView(this.props);
       treeView.render({}, 'html');
     } else if(state.page === 'bookmark') {
       let bookmark = new Bookmark(state);

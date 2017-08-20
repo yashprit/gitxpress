@@ -20,13 +20,13 @@ const header:string = `
 
 export default class TreeView extends IView {
   
-  private provider:Service;
+  private props:any;
   private parsedInfo:RepoParam;
 
-  constructor(state:any, service:Service) {
+  constructor(props:any) {
     super('#gxContentArea', template);
-    this.provider = service;
-    this.parsedInfo = this.provider.getRepoInformation(this.location);
+    this.props = props;
+    this.parsedInfo = this.props.provider.getRepoInformation();
   }
 
   componentWillRender(){
@@ -35,10 +35,10 @@ export default class TreeView extends IView {
 
   componentDidRender(){
     if(this.parsedInfo) {
-      if(this.provider.parsedTree && this.provider.parsedTree.repoInfo.branch == this.parsedInfo.branch) {
-        this.populateTree(this.provider.parsedTree);
+      if(this.props.provider.parsedTree && this.props.provider.parsedTree.repoInfo.branch == this.parsedInfo.branch) {
+        this.populateTree(this.props.provider.parsedTree);
       } else {
-        this.provider.loadRepo(this.parsedInfo, this.populateTree);
+        this.props.provider.loadRepo(this.parsedInfo, this.populateTree);
       }
     } else {
       //handle error while not able to parse username and password
@@ -46,7 +46,7 @@ export default class TreeView extends IView {
   }
 
   handleFileSelect = (e) => {
-    this.provider.selectFile(e, '#js-repo-pjax-container');
+    this.props.provider.selectFile(e, '#js-repo-pjax-container');
     e.preventDefault();
   }
 
