@@ -20,11 +20,8 @@ export default class GithubProvider extends Service {
 
   private static instance:GithubProvider;
 
-  private url:any;
-
   constructor(url:string) {
-    super();
-    this.url = url;
+    super(url);
   }
 
   static getInstance(url:string) {

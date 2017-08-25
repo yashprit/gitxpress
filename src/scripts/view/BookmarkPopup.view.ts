@@ -1,4 +1,5 @@
 import IView from './IView';
+import { RepoParam, Tag } from '../service/';
 import octicons from "octicons";
 import $ from 'jquery';
 
@@ -25,8 +26,9 @@ const template:string = `
                 <ul id="gxAvaiableTags" class="gitxpress__tag-popup--tags"></ul>
                 <div class="gitxpress__tag-popup--tag-box">
                   <input type="text" placeholder="enter tag name, press enter" id="gxNewTagValue">
+                  <button id="gxAddTag" class="gitxpress__tag-popup--tag-action">Add</button>
                 </div>
-                <button id="gxAddTag" class="gitxpress__tag-popup--tag-action">Add</button>
+                <button id="gxUpdateTag" class="gitxpress__tag-popup--tag-action">Done</button>
               </div>
             </div>
           </div>
@@ -38,49 +40,83 @@ const template:string = `
 
 export default class BookmarkPopupView extends IView {
 
-  private location:any;
   private props:any;
+  private tags:Array<any>;
 
   constructor(props:any) {
     super('.pagehead-actions', template);
     this.props = props;
+    this.tags = props.state.tags;
   }
 
   componentWillRender(){
-    console.log("component will render")
+    console.log("Will render")
   }
 
   componentDidRender(){
     $('#gxAddTag').on("click", this.onTagAdd);
+    $('#gxUpdateTag').on("click", this.onTagUpdate);
     $('#gxNewTagValue').on("keypress", this.onTagAdd);
+    $("ul").on("change", "li.md-checkbox > input[type='checkbox']", this.onTagChanged);
+    this.updateTags(this.props.state.tags);
   }
 
   onTagAdd = (e) => {
+    let currentRepo:RepoParam = this.props.provider.getRepoInformation(document.location.href);
+
+    let repoStr = `${currentRepo.username}_${currentRepo.repo}`;
+
     if(event.type === 'click' || e.keyCode == 13) {
       let tagValue = $('#gxNewTagValue').val();
-      $('#gxNewTagValue').val("")
-      this.props.addTag(tagValue);
+      if(this.tags[tagValue]) {
+        //error
+      } else {
+        this.tags[tagValue] = [];
+        this.tags[tagValue].push(repoStr);
+        $('#gxNewTagValue').val("");
+        this.updateTags(this.tags);
+      }
     }
+  }
+
+  onTagUpdate = (e) => {
+    this.props.addTag(this.tags);
+  }
+
+  onTagChanged = (e) => {
+    let currentRepo:RepoParam = this.props.provider.getRepoInformation(document.location.href);
+    let repoStr = `${currentRepo.username}_${currentRepo.repo}`;
+    let tagName = $(e.currentTarget).data('name');
+    let repos = this.tags[tagName];
+    let index = repos.indexOf(repoStr);
+    
+    if($(e.currentTarget).is(":checked")) {
+      if (index == -1) {
+        this.tags[tagName].push(repoStr);
+      }
+    } else {
+      if (index > -1) {
+        repos.splice(index, 1);
+      }
+      this.tags[tagName] = repos;
+    }
+    e.preventDefault();
   }
 
   initView(){
     let tagIcon:string = octicons['bookmark'].toSVG();
-    this.render({
-      tags: this.props.state.tags,
-      tagIcon: tagIcon
-    }, 'prepend');
+    this.render({tagIcon: tagIcon}, 'prepend');
   }
 
-  updateTags(state:any) {
-    let stateHtml = [];
-    for(let i = 0; i < state.tags.length; i++) {
-      stateHtml.push(`
-        <li class='md-checkbox'>
-          <input id="gxtag_${state.tags[i]}" type="checkbox">
-          <label for="gxtag_${state.tags[i]}">${state.tags[i]}</label>
-        </li>`
-      );
-    }
-    $('#gxAvaiableTags').html(stateHtml.join(''));
+  updateTags(tags:Array<any>=[]) {
+    let currentRepo:RepoParam = this.props.provider.getRepoInformation(document.location.href);
+    let repoStr = `${currentRepo.username}_${currentRepo.repo}`;
+    let stateHtmlStr = Object.keys(tags).reduce((acc:String, value:String, key:number) => {
+      let checkBoxStatus = tags[value].indexOf(repoStr) > -1 ? `<input id="gxtag_${value}" type="checkbox" data-name="${value}" checked>` :`<input id="gxtag_${value}" type="checkbox" data-name="${value}" >`;
+      acc.push(`<li class='md-checkbox'>${checkBoxStatus}<label for="gxtag_${value}">${value}</label></li>`);
+      return acc;
+    }, []).join('');
+
+    $('#gxAvaiableTags').html(stateHtmlStr);
   }
 }

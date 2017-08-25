@@ -5,6 +5,12 @@ import Storage from './Storage';
 export default abstract class Service {
 
   private tags:Array<Tag>;
+
+  url:any;
+
+  constructor(url:any) {
+    this.url = url;
+  }
   
   abstract loadRepo(parsedInfo:RepoParam, callback:any) :void;
   abstract getRepoInformation(url:string): RepoParam;
