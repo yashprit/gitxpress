@@ -1,7 +1,7 @@
 import IView from './IView';
 
 const template:string = `
-  <div class="gitxpress--sidebar--settings" id="gxSettingsView">
+  <div class="gitxpress__sidebar--settings" id="gxSettingsView">
     <h1>Settings</h1>
     <div class="gitxpress--sidebar--settings__body">
       <div>Link to firebase <span id='gxFirebaseLinkStatus'></span></div>

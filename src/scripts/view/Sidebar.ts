@@ -10,14 +10,14 @@ import 'bigslide';
 
 const template:string = `
   <div class="gitxpress" id="gxMainView">
-    <a class="push gitxpress--toogle-link tooltipped-s js-menu-target" id="gxSideMenuLink"><%this.toggleIcon%></a>
+    <a class="push gitxpress--toogle-link" id="gxSideMenuLink"><%this.toggleIcon%></a>
     <div id="menu" class="gitxpress__sidebar">
-      <div class="header gitxpress__sidebar--header" id="gxSidebarHeader">
+      <div class="gitxpress__sidebar--header" id="gxSidebarHeader">
         <div class="gitxpress__sidebar--header--linkLarge" id="gxHeaderArea"></div>
         <div class="gitxpress__sidebar--header--linkSmall" id="gxActions">
-          <a class="header-navlink gitxpress__sidebar--header--action" data-page="tree"><%this.branchIcon%></a>
-          <a class="header-navlink gitxpress__sidebar--header--action" data-page="bookmark"><%bookMarkIcon%></a>
-          <a class="header-navlink gitxpress__sidebar--header--action" data-page="settings"><%settingIcon%></a>
+          <a class="gitxpress__sidebar--header--action" data-page="tree"><%this.branchIcon%></a>
+          <a class="gitxpress__sidebar--header--action" data-page="bookmark"><%bookMarkIcon%></a>
+          <a class="gitxpress__sidebar--header--action" data-page="settings"><%settingIcon%></a>
         </div>
       </div>
       <div id='gxContentArea'></div>
@@ -60,7 +60,7 @@ export default class Sidebar extends IView {
     //render bookmark
   }
 
-  showPageHandler(e){
+  showPageHandler = (e) => {
     let currentPage = $(e.currentTarget).data('page');
     this.props.onPageChange(currentPage);
   }
@@ -73,10 +73,10 @@ export default class Sidebar extends IView {
       let treeView = new TreeView(this.props);
       treeView.render({}, 'html');
     } else if(state.page === 'bookmark') {
-      let bookmark = new Bookmark(state);
+      let bookmark = new Bookmark(this.props);
       bookmark.render({}, 'html');
     } else if(state.page === 'settings') {
-      let settings = new Settings(state);
+      let settings = new Settings(this.props);
       settings.render({}, 'html');
     }
   }

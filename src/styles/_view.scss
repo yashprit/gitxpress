@@ -77,9 +77,32 @@ $md-checkmark-color: #fff;
 		border-right: 1px solid #E1E4E8;
 		background-color: #FFFFFF;
 
+		&--settings {
+			padding: 10px;
+		}
+	
+		&--bookmark {
+			padding: 10px;
+			&__list {
+				margin: 10px;
+				li {
+					margin: 10px;
+					list-style: none;
+				}
+	
+				&--dropdown {
+					margin: 10px;
+					width: 90%;
+				}	
+			}
+		}
+
 		&--header {
+			z-index: 1;
+			padding: 14px 0px 14px 10px;
+			color: rgba(255,255,255,0.75);
+			background-color: #24292e;
 			margin-right: -1px;
-			padding-left: 10px;
 			&--linkLarge {
 				display: inline-block !important;
 				width: 65%;
@@ -91,7 +114,9 @@ $md-checkmark-color: #fff;
 			}
 
 			&--action {
+				color: rgba(255,255,255,0.75);
 				cursor: pointer;
+				padding: 5px 5px 0px;
 				display: inline-block !important;
 			}
 		}
@@ -101,7 +126,7 @@ $md-checkmark-color: #fff;
 .node-gxTreeView {
 	color: #0366d6;
 	& a {
-		vertical-align: super;
+		vertical-align: baseline;
 	}
 	&.list-group-item {
 		padding: 6px 3px;
