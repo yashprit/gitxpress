@@ -61,7 +61,7 @@ export default class BookmarkPopupView extends IView {
     this.updateTags(this.props.state.tags);
   }
 
-  onTagAdd = (e) => {
+  onTagAdd = (e:any) => {
     let currentRepo:RepoParam = this.props.provider.getRepoInformation(document.location.href);
 
     let repoStr = `${currentRepo.username}_${currentRepo.repo}`;
@@ -79,11 +79,11 @@ export default class BookmarkPopupView extends IView {
     }
   }
 
-  onTagUpdate = (e) => {
+  onTagUpdate = (e:any) => {
     this.props.addTag(this.tags);
   }
 
-  onTagChanged = (e) => {
+  onTagChanged = (e:any) => {
     let currentRepo:RepoParam = this.props.provider.getRepoInformation(document.location.href);
     let repoStr = `${currentRepo.username}_${currentRepo.repo}`;
     let tagName = $(e.currentTarget).data('name');

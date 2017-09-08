@@ -139,8 +139,8 @@ export default class GithubProvider extends Service {
       }
     });
 
-    function sortNodesAndChildren(nodes) {
-      nodes.sort((a, b) => {
+    function sortNodesAndChildren(nodes:any) {
+      nodes.sort((a:any, b:any) => {
         if(a.type === b.type) {
           let nameA = a.text.toUpperCase(); 
           let nameB = b.text.toUpperCase(); 
@@ -165,7 +165,7 @@ export default class GithubProvider extends Service {
           return 0;
         }
       });
-      nodes.forEach(function (node) {
+      nodes.forEach(function (node:any) {
         if (node.nodes) {
           sortNodesAndChildren(node.nodes);
         }

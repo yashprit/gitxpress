@@ -8,9 +8,9 @@ export {
 
 export default function createStore(reducer:any, intialState:any){
   let state = intialState;
-  let subscribers = [];
+  let subscribers:Array<any> = [];
 
-  function subscribe(listener) {
+  function subscribe(listener:any) {
     subscribers.push(listener);
 
     var unsubscribed = false;
@@ -25,7 +25,7 @@ export default function createStore(reducer:any, intialState:any){
     }
   }
 
-  function dispatch(action){
+  function dispatch(action:any){
     state = reducer(state, action);
 
     subscribers.forEach((subscriber) => {

@@ -60,7 +60,7 @@ export default class Sidebar extends IView {
     //render bookmark
   }
 
-  showPageHandler = (e) => {
+  showPageHandler = (e:any) => {
     let currentPage = $(e.currentTarget).data('page');
     this.props.onPageChange(currentPage);
   }
@@ -77,7 +77,7 @@ export default class Sidebar extends IView {
       bookmark.render({}, 'html');
     } else if(state.page === 'settings') {
       let settings = new Settings(this.props);
-      settings.render({}, 'html');
+      settings.render(state, 'html');
     }
   }
 }

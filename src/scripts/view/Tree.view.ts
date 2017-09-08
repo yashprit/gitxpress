@@ -45,7 +45,7 @@ export default class TreeView extends IView {
     }
   }
 
-  handleFileSelect = (e) => {
+  handleFileSelect = (e:any) => {
     this.props.provider.selectFile(e, '#js-repo-pjax-container');
     e.preventDefault();
   }
