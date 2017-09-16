@@ -1,17 +1,20 @@
-import { createStore, Storage, Reducer, GitFactory, Service, Tag, RepoParam } from './service';
+import { 
+  createStore, 
+  Reducer, 
+  GitFactory, 
+  Service, 
+  Tag, 
+  RepoParam, 
+  whichBrowser,
+  BrowserType
+} from './service';
 import Sidebar from './view/Sidebar';
-import * as firebase from 'firebase';
+import { 
+  StorageFactory, 
+  IStorage, 
+  ChromeStorage 
+} from './service/StorageFactory';
 import BookmarkPopupView from './view/BookmarkPopup.View';
-
-const config = {
-  apiKey: '<YOUR_API_KEY>',
-  databaseURL: '<YOUR_DATABASE_URL>',
-  storageBucket: '<YOUR_STORAGE_BUCKET_NAME>'
-};
-
-firebase.initializeApp(config);
-
-var declare chrome:any;
 
 export default class Main {
 
@@ -20,58 +23,65 @@ export default class Main {
   private bookmarkPopup:BookmarkPopupView;
   private gitService:Service;
   private location:any;
+  private storage:IStorage;
 
   constructor(){
-    document.addEventListener('DOMContentLoaded', this.bootstrap);
-  }
-
-  contentLoaded = ():void => {
-    firebase.auth().onAuthStateChanged(this.bootstrap);
+    let browser:BrowserType = whichBrowser();
+    this.storage = StorageFactory.createProvider(browser);
+    if(browser.isChrome) {
+      chrome.storage.onChanged.addListener(function(changes:any, area:any) {
+        console.log(changes, area);
+      });
+    }
   }
 
   bootstrap = (user:any):void => {
-    let intialState = Storage.get('__gitxpress__') || {
-      page: 'tree', 
-      tags: {}, 
-      settings: {
-        sync: false
-      }
-    };
+    this.storage.get('__gitxpress__').then((value:any) => {
+      let intialState =  value || {
+        page: 'tree', 
+        tags: {}, 
+        settings: {
+          sync: false
+        }
+      };
 
-    if(user) {
-      intialState.user = user;
-      intialState.settings = {
-        sync: true,
-        token: undefined
-      }
-    }
-
-    this.location = document.location;
-
-    this.gitService = GitFactory.createProvider(this.location);
-
-    this.store = createStore(Reducer, intialState);
-    this.store.subscribe(this.storeEvent);
-
-    let currentState = this.store.getState();
-
-    this.sidebar = new Sidebar({
-      onPageChange: this.openPage.bind(this),
-      state: currentState,
-      provider: this.gitService,
-      addToken: this.addToken.bind(this),
-      onSyncEnabled: this.syncEnabled.bind(this)
-    });
-    this.sidebar.initView();
-
-    this.bookmarkPopup = new BookmarkPopupView({
-      provider: this.gitService,
-      addTag: this.onTagAdd.bind(this),
-      state: currentState 
-    });
-    this.bookmarkPopup.initView();
-
-    this.store.dispatch({type: 'PAGE_CHANGE', payload:{page: currentState.page}});
+      /*if(user) {
+        intialState.user = user;
+        intialState.settings = {
+          sync: true,
+          token: undefined
+        }
+      }*/
+  
+      this.location = document.location;
+  
+      this.gitService = GitFactory.createProvider(this.location, this.storage);
+  
+      this.store = createStore(Reducer, intialState);
+      this.store.subscribe(this.storeEvent);
+  
+      let currentState = this.store.getState();
+  
+      this.sidebar = new Sidebar({
+        onPageChange: this.openPage.bind(this),
+        state: currentState,
+        provider: this.gitService,
+        addToken: this.addToken.bind(this),
+        onSyncEnabled: this.syncEnabled.bind(this)
+      });
+      this.sidebar.initView();
+  
+      this.bookmarkPopup = new BookmarkPopupView({
+        provider: this.gitService,
+        addTag: this.onTagAdd.bind(this),
+        state: currentState 
+      });
+      this.bookmarkPopup.initView();
+  
+      this.store.dispatch({type: 'PAGE_CHANGE', payload:{page: currentState.page}});
+    }, (error:any) => {
+      console.error(error)
+    })
   }
 
   onTagAdd = (newTags:any):void => {
@@ -95,43 +105,31 @@ export default class Main {
   }
 
   storeEvent = (state:any, actionType:string):void => {
-    Storage.set('__gitxpress__', state);
-    if(actionType === 'PAGE_CHANGE') {
-      this.sidebar.renderRoute(state);
-    }
-
-    if(actionType === 'FIREBASE_STATUS') {
-      console.log(state);
-    }
-
-    if(actionType === 'ADD_TAG') {
-      //if sync enabled make api call to firebase
-      console.log(state);
-    }
+    this.storage.set('__gitxpress__', state).then(() => {
+      if(actionType === 'PAGE_CHANGE') {
+        this.sidebar.renderRoute(state);
+      }
+  
+      if(actionType === 'FIREBASE_STATUS') {
+        console.log(state);
+      }
+  
+      if(actionType === 'ADD_TAG') {
+        //if sync enabled make api call to firebase
+        console.log(state);
+      }
+    });
   }
 
   syncEnabled = ():void => {
-    /*chrome.identity.getAuthToken({interactive: !!interactive}, function(token) {
-      if (chrome.runtime.lastError && !interactive) {
-        console.log('It was not possible to get a token programmatically.');
-      } else if(chrome.runtime.lastError) {
-        console.error(chrome.runtime.lastError);
-      } else if (token) {
-        // Authrorize Firebase with the OAuth Access Token.
-        var credential = firebase.auth.GoogleAuthProvider.credential(null, token);
-        firebase.auth().signInWithCredential(credential).catch(function(error) {
-          // The OAuth token might have been invalidated. Lets' remove it from cache.
-          if (error.code === 'auth/invalid-credential') {
-            chrome.identity.removeCachedAuthToken({token: token}, function() {
-              startAuth(interactive);
-            });
-          }
-        });
-      } else {
-        console.error('The OAuth Token was null');
-      }
-    });*/
+    chrome.runtime.sendMessage({interactive: true})
+   // window.postMessage({interactive: true}, '*');
   }
+
+  processMessage = (message:any):void => {
+    console.log(message)
+  }
+  
 
   openPage = (currentPage:string):void => {
     this.store.dispatch({
@@ -143,4 +141,7 @@ export default class Main {
   }
 }
 
-(<any>window).gitxpress = new Main();
+window.addEventListener ("load", () => {
+  (<any>window).gitxpress = new Main();
+  (<any>window).gitxpress.bootstrap();
+}, false);

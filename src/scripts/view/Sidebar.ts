@@ -4,8 +4,9 @@ import IView from './IView';
 import TreeView from './Tree.View';
 import Bookmark from './Bookmark.View';
 import Settings from './Settings.View';
-import $ from 'jquery';
-import octicons from "octicons";
+import * as $ from 'jquery';
+import * as octicons from "octicons";
+import { RepoParam } from '../service/';
 import 'bigslide';
 
 const template:string = `
@@ -68,6 +69,12 @@ export default class Sidebar extends IView {
   renderRoute(state:any){
     $('.gitxpress__sidebar--header--action').removeClass('gitxpress__action--selected');
     $(`a[data-page='${state.page}']`).addClass('gitxpress__action--selected');
+
+    let currentRepo:RepoParam = this.props.provider.getRepoInformation(document.location.href);
+
+    if(!currentRepo && state.page == 'tree') {
+      state.page = 'bookmark';
+    }
 
     if(state.page === 'tree') {
       let treeView = new TreeView(this.props);

@@ -1,7 +1,7 @@
 import IView from './IView';
 import { RepoParam, Tag } from '../service/';
-import octicons from "octicons";
-import $ from 'jquery';
+import * as octicons from "octicons";
+import * as $ from 'jquery';
 
 const tagIcon:string = octicons['three-bars'].toSVG();
 
@@ -41,7 +41,7 @@ const template:string = `
 export default class BookmarkPopupView extends IView {
 
   private props:any;
-  private tags:Array<any>;
+  private tags:Tag;
 
   constructor(props:any) {
     super('.pagehead-actions', template);
@@ -58,7 +58,6 @@ export default class BookmarkPopupView extends IView {
     $('#gxUpdateTag').on("click", this.onTagUpdate);
     $('#gxNewTagValue').on("keypress", this.onTagAdd);
     $("ul").on("change", "li.md-checkbox > input[type='checkbox']", this.onTagChanged);
-    this.updateTags(this.props.state.tags);
   }
 
   onTagAdd = (e:any) => {
@@ -67,14 +66,14 @@ export default class BookmarkPopupView extends IView {
     let repoStr = `${currentRepo.username}_${currentRepo.repo}`;
 
     if(event.type === 'click' || e.keyCode == 13) {
-      let tagValue = $('#gxNewTagValue').val();
+      let tagValue:string = <string>$('#gxNewTagValue').val();
       if(this.tags[tagValue]) {
         //error
       } else {
         this.tags[tagValue] = [];
         this.tags[tagValue].push(repoStr);
         $('#gxNewTagValue').val("");
-        this.updateTags(this.tags);
+        this.updateTags(this.tags, currentRepo);
       }
     }
   }
@@ -104,14 +103,19 @@ export default class BookmarkPopupView extends IView {
   }
 
   initView(){
-    let tagIcon:string = octicons['bookmark'].toSVG();
-    this.render({tagIcon: tagIcon}, 'prepend');
+    let currentRepo:RepoParam = this.props.provider.getRepoInformation(document.location.href);
+    if(currentRepo) {
+      this.updateTags(this.props.state.tags, currentRepo);
+      let tagIcon:string = octicons['bookmark'].toSVG();
+      this.render({tagIcon: tagIcon}, 'prepend');
+    } else {
+      //not a repo page
+    }
   }
 
-  updateTags(tags:Array<any>=[]) {
-    let currentRepo:RepoParam = this.props.provider.getRepoInformation(document.location.href);
+  updateTags(tags:Tag={}, currentRepo:RepoParam) {
     let repoStr = `${currentRepo.username}_${currentRepo.repo}`;
-    let stateHtmlStr = Object.keys(tags).reduce((acc:String, value:String, key:number) => {
+    let stateHtmlStr = Object.keys(tags).reduce((acc:Array<string>, value:string, key:number) => {
       let checkBoxStatus = tags[value].indexOf(repoStr) > -1 ? `<input id="gxtag_${value}" type="checkbox" data-name="${value}" checked>` :`<input id="gxtag_${value}" type="checkbox" data-name="${value}" >`;
       acc.push(`<li class='md-checkbox'>${checkBoxStatus}<label for="gxtag_${value}">${value}</label></li>`);
       return acc;

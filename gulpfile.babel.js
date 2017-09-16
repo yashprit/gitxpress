@@ -1,18 +1,15 @@
 import fs from "fs";
 import gulp from 'gulp';
-import {merge} from 'event-stream'
+import { merge } from 'event-stream'
 import browserify from 'browserify';
 import source from 'vinyl-source-stream';
 import buffer from 'vinyl-buffer';
-import preprocessify from 'preprocessify';
 import gulpif from "gulp-if";
-import tsc from 'gulp-typescript';
-import tslint from 'gulp-tslint';
 import sourcemaps from 'gulp-sourcemaps';
-import htmlToJs from 'gulp-html-to-js';
 import sassInlineSvg from 'gulp-sass-inline-svg';
 import svgmin from 'gulp-svgmin';
 import runSequence from 'run-sequence';
+import tsify from 'tsify';
 
 const $ = require('gulp-load-plugins')();
 
@@ -25,12 +22,6 @@ const production = process.env.NODE_ENV === "production";
 const target = process.env.TARGET || "chrome";
 const environment = process.env.NODE_ENV || "development";
 
-let tsProject = tsc.createProject('./tsconfig.json');
-
-gulp.task('clean', () => {
-  return pipe([`./build`, './tmp'], $.clean())
-});
-
 gulp.task('sass:svg', function(){
   return gulp.src('./src/icons/seti_ui_icon/*.svg') 
     .pipe($.svgmin())
@@ -38,6 +29,18 @@ gulp.task('sass:svg', function(){
       destDir: './src/styles'
     }));
 });
+
+gulp.task('clean', () => {
+  return pipe(`./build`, $.clean())
+});
+
+gulp.task('constant', () => {
+  gulp.src(`./src/${target}/browser.json`)
+    .pipe(jeditor({
+      'type': target
+    }))
+    .pipe(gulp.dest("./src/scripts/service"));
+})
 
 gulp.task('styles', () => {
   return gulp.src('src/styles/index.scss')
@@ -48,45 +51,23 @@ gulp.task('styles', () => {
       includePaths: ['.']
     }).on('error', $.sass.logError))
     .pipe($.concat('gitxpress.css'))
-    .pipe(gulp.dest('./tmp/style'));
-});
-
-gulp.task('html2js', () => {
-  return gulp.src('src/scripts/sidebar.template.html')
-    .pipe(htmlToJs({
-      concat: 'sidebar.template.js',
-      global: 'window.template'
-    }))
-    .pipe(gulp.dest('tmp/source/js'));
+    .pipe(gulp.dest(`./build/${target}/style`));
 });
 
 gulp.task('vendor', () => {
   let src = [
-    './src/vendor/bootstrap-treeview.js',
-    //'./tmp/source/js/sidebar.template.js'
+    './src/vendor/bootstrap-treeview.js'
   ]
-  return pipe(
-    src,
-    $.concat('gitxpress-vendor.js'),
-    './tmp/js/'
-  )
+  return pipe(src, $.concat('gitxpress-vendor.js'), `./build/${target}/js`);
 })
-
-gulp.task('ts', () => {
-  return gulp.src('./src/scripts/**/*.ts')
-    .pipe(tsProject())
-    .js.pipe(gulp.dest('./tmp/source/js'));
-});
 
 gulp.task('bundle-js',  () => {
   return browserify({
-    entries: './tmp/source/js/Main.js',
+    basedir: '.',
+    entries: './src/scripts/Main.ts',
     debug: true
   })
-  .transform('babelify', { presets: ['es2015'] })
-  .transform(preprocessify, {
-    includeExtensions: ['.js']
-  })
+  .plugin('tsify')
   .bundle()
   .pipe(source('gitxpress.js'))
   .pipe(buffer())
@@ -98,21 +79,21 @@ gulp.task('bundle-js',  () => {
       "ascii_only": true
     } 
   })))
-  .pipe(gulp.dest('./tmp/js/'))
+  .pipe(gulp.dest(`./build/${target}/js`))
 });
 
 gulp.task('js', (cb) => {
-  runSequence(/*'html2js',*/ 'ts', 'bundle-js', 'vendor', cb)
+  runSequence('bundle-js', 'vendor', cb)
 });
 
 gulp.task('build', (cb) => {
-  runSequence('clean', 'styles', 'js', cb)
+  runSequence('clean', 'styles', 'js', `${target}`);
 });
 
 gulp.task('default', ['chrome']);
 
-gulp.task('chrome', ['build'], (cb) => {
-  return mergeAll('chrome');
+gulp.task('chrome', (cb) => {
+  return mergeAll();
 });
 
 gulp.task('watch', ['chrome'], () => {
@@ -130,16 +111,15 @@ function pipe(src, ...transforms) {
   }, gulp.src(src))
 }
 
-function mergeAll(dest) {
+function mergeAll() {
   return merge(
-    pipe('./src/icons/**/*', `./build/${dest}/icons`),
-    pipe(['./src/_locales/**/*'], `./build/${dest}/_locales`),
-    pipe([`./src/images/${target}/**/*`], `./build/${dest}/images`),
-    pipe(['./src/images/shared/**/*'], `./build/${dest}/images`),
-    pipe(['./tmp/js/gitxpress.js'], `./build/${dest}/js`),
-    pipe(['./tmp/js/gitxpress-vendor.js'], `./build/${dest}/js`),
-    pipe(['./tmp/style/gitxpress.css'], `./build/${dest}/style`),
-    pipe(`./config/${dest}/background.js`, $.babel(), `./build/${dest}/js`),
-    pipe(`./config/${dest}/manifest.json`, $.replace('$VERSION', version), `./build/${dest}/`)
+    pipe('./src/icons/**/*', `./build/${target}/icons`),
+    pipe(['./src/_locales/**/*'], `./build/${target}/_locales`),
+    pipe([`./src/images/${target}/**/*`], `./build/${target}/images`),
+    pipe(['./src/images/shared/**/*'], `./build/${target}/images`),
+    pipe(`./src/${target}/Extension.js`, $.babel(), `./build/${target}/js`),
+    pipe(`./src/${target}/Proxy.js`, $.babel(), `./build/${target}/js`),
+    pipe(`./src/${target}/container.html`, `./build/${target}/`),
+    pipe(`./src/${target}/manifest.json`, $.replace('$VERSION', version), `./build/${target}/`)
   )
 }

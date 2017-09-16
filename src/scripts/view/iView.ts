@@ -1,6 +1,6 @@
 /// <reference path="../../../typings.d.ts" />
 
-import $ from 'jquery';
+import * as $ from 'jquery';
 
 export default abstract class iView {
   template:string;

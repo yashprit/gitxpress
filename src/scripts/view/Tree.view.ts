@@ -1,5 +1,5 @@
 import IView from './IView';
-import $ from 'jquery';
+import * as $ from 'jquery';
 import 'jquery-pjax';
 import {TreeInfo, Service, RepoParam} from '../service';
 

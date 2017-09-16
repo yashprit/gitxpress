@@ -1,0 +1,32 @@
+{
+  "name": "gitxpress",
+  "version": "0.0.1",
+  "manifest_version": 2,
+  "description": "Browser plugin for creating file explorer tree and bookmarking GitHub Repository",
+  "default_locale": "en",
+  "background": {
+    "page": "container.html",
+    "persistent": false
+  },
+  "content_scripts": [{
+    "matches": ["https://bitbucket.org/*","https://github.com/*"],
+    "js": ["js/Proxy.js"]
+  }],
+  "optional_permissions": [
+    "https://bitbucket.org/*",
+    "https://github.com/*"
+  ],
+  "permissions": [
+    "identity",
+    "storage"
+  ],
+  "content_security_policy":"script-src 'self' https://www.gstatic.com/ https://*.firebaseio.com https://www.googleapis.com; object-src 'self'",
+  "oauth2": {
+    "client_id": "558437646545-jj2bs7abgv9o4pu5l847qfn8s31gf3mg.apps.googleusercontent.com",
+    "scopes": [
+      "https://www.googleapis.com/auth/userinfo.email",
+      "https://www.googleapis.com/auth/userinfo.profile"
+    ]
+  },
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAj+OAEAe9dcC0cnwfYhZsN9Ivifdh6AeRcGbLFQyTgmdSySW9aam1ra4h2+lKNt3Deuzk4G9YKuIV97gPPXk+uVxse54+kGAZXfJLxTFaw63RHq2aqLjt2M53dEmiugXGEoqKw2Qpn5mIMUZ+1LIro+/XQ9pdouIW7N3mMuD/p9TeirelPPsWvgzKL37JO6tTImRMixMxd0XQbXbxBvbXR7IpTu8/M6U6tuoP1QsDdIcxP3gDa+5VT9cIvap6OmEXMAvnngD6ivt6bjM2F9baSzPxlwEucHN0a1mSqse4Lso2Ps/+2hhWJovilDc7cNxBRUjuOnzzK0Z+eDbv60P5ewIDAQAB"
+}

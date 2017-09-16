@@ -1,19 +1,22 @@
 import IView from './IView';
+import { Tag } from '../service';
 
 const template:string = `<div class="gitxpress__sidebar--bookmark" id="gxBookmarkView"></div>`;
 
 export default class BookmarkView extends IView {
 
   private props:any;
+  private tags:Tag;
 
   constructor(props:any) {
     super('#gxContentArea', template);
     this.props = props;
+    this.tags = props.state.tags || {};
   }
 
   componentDidRender(){
     $('#gxHeaderArea').html(`<span class="gitxpress__sidebar--header--action">Bookmark</span>`);
-    let tagList = Object.keys(this.props.state.tags).reduce((acc:Array<String>, value:String, key:Number) => {
+    let tagList = Object.keys(this.tags).reduce((acc:Array<String>, value:String, key:Number) => {
       acc.push(`<option value="${value}">${value}</option>`);
       return acc;
     }, []).join('');
@@ -39,16 +42,20 @@ export default class BookmarkView extends IView {
     console.log("will render");
   }
 
-  findRepos(tag?:String) {
+  findRepos(tag?:string) {
 
-    let tagValue = tag? {[tag]: this.props.state.tags[tag]}: this.props.state.tags;
+    let tagsValue:Tag = this.props.state.tags;
 
-    return Object.keys(tagValue).reduce((acc:Array<String>, value:String, key:Number) => {
-      let repos = tagValue[value];
+    if(tag) {
+      let obj:Tag = {};
+      obj[tag] = <Array<string>>this.tags[tag];
+      tagsValue = obj;
+    }
+
+    return Object.keys(tagsValue).reduce((acc:Array<string>, value:string, key:number) => {
+      let repos = tagsValue[value];
       acc = acc.concat(repos);
       return acc;
     }, []);
   }
-
-
 }

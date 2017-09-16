@@ -21,8 +21,7 @@ export interface TreeInfo {
 }
 
 export interface Tag {
-  key: string,
-  repos: Array<string>
+  [key: string]: Array<string>
 }
 
 export interface Action {

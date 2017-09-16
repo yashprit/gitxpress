@@ -1,7 +1,8 @@
 import Service from './Service';
 import {RepoParam, Tree} from './FunctionalInterface';
-import $ from 'jquery';
+import * as $ from 'jquery';
 import Icon from '../Icon';
+import IStorage from './IStorage';
 
 const GIT_KEYWORD = [
   'settings', 'orgs', 'organizations',
@@ -20,13 +21,13 @@ export default class GithubProvider extends Service {
 
   private static instance:GithubProvider;
 
-  constructor(url:string) {
-    super(url);
+  constructor(url:string, storage:IStorage) {
+    super(url, storage);
   }
 
-  static getInstance(url:string) {
+  static getInstance(url:string, storage:IStorage) {
     if (!GithubProvider.instance) {
-      GithubProvider.instance = new GithubProvider(url);
+      GithubProvider.instance = new GithubProvider(url, storage);
     }
     return GithubProvider.instance;
   }
@@ -183,6 +184,6 @@ export default class GithubProvider extends Service {
   }
 
   selectFile(e:any, container:string){
-    $.pjax.click(e, {container: container})
+    ($.pjax as any).click(e, {container: container})
   }
 }

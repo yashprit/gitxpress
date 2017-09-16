@@ -3,15 +3,23 @@ import IView from './IView';
 const template:string = `
   <div class="gitxpress__sidebar--settings" id="gxSettingsView">
     <div class="gitxpress--sidebar--settings__body">
-      <a id='gxFirebaseLinkStatus'>Sync Plugin</a>
-      <div>
+      <div class="gitxpress__sidebar--settings__sync_body">
+        <a class="gitxpress__sidebar--settings__sync_settings" id='gxFirebaseLinkStatus'>Sync Plugin</a>
+        <span class="gitxpress--checkbox">
+          <input type="checkbox">
+          <label data-on="ON" data-off="OFF"></label>
+        </span>
+      </div>
+      <div class="gitxpress__sidebar--settings__token_body">
         <%if(!settings.token){%>
-        <label>Add Github Token</label>
-        <a href="https://github.com/settings/tokens/new">click here to genrate token</a>
-        <input type="text" id="gxGithubTokenValue">
-        <button id="gxGithubTokenSubmit">Add</button>
+          <label>
+            Add Github Token
+            <a href="https://github.com/settings/tokens/new">(Generate token)</a>
+          </label>
+          <input type="text" id="gxGithubTokenValue">
+          <button id="gxGithubTokenSubmit">Add</button>
         <% } else { %>
-        <span>Your Token is </span><% this.settings.token %>
+          <span>Your Token is </span><% this.settings.token %>
         <% } %>
       </div>
     </div>

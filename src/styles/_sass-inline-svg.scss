@@ -75,7 +75,7 @@ $SVG-URL: true !default;
 		@warn "Function '#{$icon}' does not exist.";
 	} @else{
 		@if(type-of($color) == "color"){
-			@warn $fillcolor;
+			//@warn $fillcolor;
 			$fillcolor: uri-encode-color($fillcolor);
 			$strokecolor: uri-encode-color($strokecolor);
 		} @else {
