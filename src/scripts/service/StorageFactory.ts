@@ -1,12 +1,12 @@
-import IStorage from './IStorage';
+import IStorage, { StorageData } from './IStorage';
 import ChromeStorage from './ChromeStorage';
 import { whichBrowser, BrowserType } from './Browser';
 
 class StorageFactory {
   public static createProvider(version:BrowserType) : IStorage {
-    /*if(version.isChrome) {
+    if(version.isChrome) {
       return new ChromeStorage();
-    }*/
+    }
     return new IStorage()
   }
 }
@@ -14,5 +14,6 @@ class StorageFactory {
 export {
   StorageFactory,
   IStorage,
-  ChromeStorage
+  ChromeStorage,
+  StorageData
 }

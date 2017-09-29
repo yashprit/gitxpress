@@ -38,9 +38,7 @@ export default class BookmarkView extends IView {
     $('#gxBookmarkView').html(`${tagHtmlList}<ul class="gitxpress__sidebar--bookmark__list">${repoList}</ul>`);
   }
 
-  componentWillRender(){
-    console.log("will render");
-  }
+  componentWillRender(){}
 
   findRepos(tag?:string) {
 

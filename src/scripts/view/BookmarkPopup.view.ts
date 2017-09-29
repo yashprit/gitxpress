@@ -49,9 +49,7 @@ export default class BookmarkPopupView extends IView {
     this.tags = props.state.tags;
   }
 
-  componentWillRender(){
-    console.log("Will render")
-  }
+  componentWillRender(){}
 
   componentDidRender(){
     $('#gxAddTag').on("click", this.onTagAdd);

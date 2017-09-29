@@ -57,9 +57,7 @@ export default class Sidebar extends IView {
     $(document).on('click', '.gitxpress__sidebar--header--action', this.showPageHandler);
   }
 
-  componentWillRender(){
-    //render bookmark
-  }
+  componentWillRender(){}
 
   showPageHandler = (e:any) => {
     let currentPage = $(e.currentTarget).data('page');
@@ -67,14 +65,14 @@ export default class Sidebar extends IView {
   }
 
   renderRoute(state:any){
-    $('.gitxpress__sidebar--header--action').removeClass('gitxpress__action--selected');
-    $(`a[data-page='${state.page}']`).addClass('gitxpress__action--selected');
-
     let currentRepo:RepoParam = this.props.provider.getRepoInformation(document.location.href);
 
     if(!currentRepo && state.page == 'tree') {
       state.page = 'bookmark';
     }
+
+    $('.gitxpress__sidebar--header--action').removeClass('gitxpress__action--selected');
+    $(`a[data-page='${state.page}']`).addClass('gitxpress__action--selected');
 
     if(state.page === 'tree') {
       let treeView = new TreeView(this.props);

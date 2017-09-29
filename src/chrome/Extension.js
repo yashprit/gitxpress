@@ -1,10 +1,13 @@
-var config = {
-  apiKey: "AIzaSyA9a76pLyvVXLXhlDZgHElmnfq5Ogz93Lg",
-  authDomain: "gitxpress-17df9.firebaseapp.com",
-  databaseURL: "https://gitxpress-17df9.firebaseio.com",
-  storageBucket: "gitxpress-17df9.appspot.com",
-};
+import { config } from './FirebaseConfig.js';
+
 firebase.initializeApp(config);
+
+chrome.storage.onChanged.addListener((changes, area) => {
+  let data = changes.gitxpress
+  handleStorageChange(data.newValue, data.oldValue)
+});
+
+let firebaseUid;
 
 function initApp() {
   // Listen for auth state changes.
@@ -16,13 +19,13 @@ function initApp() {
 
 function saveUser(user){
   if(user) {
-    chrome.storage.local.get('__gitxpress__', (oldProps) => {
-      let newProps = Object.assign({}, oldProps, {
-        __fb__: user
-      })
-      chrome.storage.sync.set('__gitxpress__', JSON.stringify(newProps));
+    firebaseUid
+    chromeStorageSet('gitxpress', {fb: user}).then((data) => {
+      console.log("user is set", data);
+    }, (error) => {
+      console.log("error ", error);
     });
-  }
+  }  
 }
 
 window.onload = function() {
@@ -31,13 +34,14 @@ window.onload = function() {
 
 var identity = chrome.identity;
 
-console.log(chrome.identity)
+var connections = {};
+
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (changeInfo.status !== 'loading') return
 
   chrome.tabs.executeScript(tabId, {
-    code: 'var injected = window.octotreeInjected; window.octotreeInjected = true; injected;',
+    code: 'var injected = window.gitxpressInjected; window.gitxpressInjected = true; injected;',
     runAt: 'document_start'
   }, (res) => {
     if (chrome.runtime.lastError || // don't continue if error (i.e. page isn't in permission list)
@@ -68,7 +72,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 
 chrome.runtime.onMessage.addListener((req, sender, sendRes) => {
   const handler = {
-    requestPermissions: () => {
+    requestPermissions(){
       const urls = (req.urls || [])
         .filter((url) => url.trim() !== '')
         .map((url) => {
@@ -103,7 +107,25 @@ chrome.runtime.onMessage.addListener((req, sender, sendRes) => {
           }
         })
       }
+    },
+    sync(payload){
+      startAuth(payload.interactive);
     }
+  }
+
+  console.log('incoming message from injected script');
+  console.log(request);
+
+  // Messages from content scripts should have sender.tab set
+  if (sender.tab) {
+    var tabId = sender.tab.id;
+    if (tabId in connections) {
+      connections[tabId].postMessage(request);
+    } else {
+      console.log("Tab not found in connection list.");
+    }
+  } else {
+    console.log("sender.tab not defined.");
   }
 
   return handler[req.type]()
@@ -122,32 +144,6 @@ function eachItem(arr, iter, done) {
   })
   return eachTask(tasks, done)
 }
-
-var connections = {};
-
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  console.log('incoming message from injected script');
-  console.log(request);
-
-  // Messages from content scripts should have sender.tab set
-  if (sender.tab) {
-    var tabId = sender.tab.id;
-    if (tabId in connections) {
-      connections[tabId].postMessage(request);
-    } else {
-      console.log("Tab not found in connection list.");
-    }
-  } else {
-    console.log("sender.tab not defined.");
-  }
-
-  let interactive = request.interactive;
-
-  startAuth(interactive);
-  
-
-  return true;
-});
 
 chrome.runtime.onConnect.addListener(function(port) {
   
@@ -191,4 +187,54 @@ function startAuth(interactive){
       console.error('The OAuth Token was null');
     }
   });
+}
+
+function chromeStorageSet(key, val) {
+  return new Promise((resolve, reject) => {
+    chromeStorageGet(key).then((value) => {
+      console.log(value)
+
+      let newValue = value? Object.assign({}, value[key], val) : Object.assign({}, val);
+
+      console.log(key, newValue);
+      
+      chrome.storage.local.set({
+        [key]: newValue
+      }, () => {
+        if (chrome.runtime.error) {
+          reject(chrome.runtime.error)
+        } else {
+          resolve(newValue)
+        }
+      });
+    }, (error) => {
+      reject(error);
+    })
+  });
+}
+  
+function chromeStorageGet(key) {
+  return new Promise((resolve, reject) => {
+    chrome.storage.local.get(key, (result) => {
+      if (!chrome.runtime.error) {
+        let data = Object.keys(result).length === 0 && result.constructor === Object? undefined : result;
+        resolve(data);
+      } else {
+        reject(chrome.runtime.error);
+      }
+    });
+  })
+}
+
+function handleStorageChange(newValue, oldValue) {
+  let isUpload = newValue.tags !== oldValue.tags;
+
+  if(isUpload) {
+    let uploadValue = {
+      tags: newValue.tags,
+      token: newValue.token
+    }
+    let uid = newValue.fb.uid;
+    firebase.database().ref(`/${uid}`).set(uploadValue);
+  }
 }

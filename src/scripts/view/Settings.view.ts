@@ -4,14 +4,14 @@ const template:string = `
   <div class="gitxpress__sidebar--settings" id="gxSettingsView">
     <div class="gitxpress--sidebar--settings__body">
       <div class="gitxpress__sidebar--settings__sync_body">
-        <a class="gitxpress__sidebar--settings__sync_settings" id='gxFirebaseLinkStatus'>Sync Plugin</a>
+        <a class="gitxpress__sidebar--settings__sync_settings">Sync Plugin</a>
         <span class="gitxpress--checkbox">
-          <input type="checkbox">
+          <input type="checkbox" id="gxFirebaseLinkStatus" checked=<% this.sync %>>
           <label data-on="ON" data-off="OFF"></label>
         </span>
       </div>
       <div class="gitxpress__sidebar--settings__token_body">
-        <%if(!settings.token){%>
+        <%if(!token){%>
           <label>
             Add Github Token
             <a href="https://github.com/settings/tokens/new">(Generate token)</a>
@@ -19,7 +19,7 @@ const template:string = `
           <input type="text" id="gxGithubTokenValue">
           <button id="gxGithubTokenSubmit">Add</button>
         <% } else { %>
-          <span>Your Token is </span><% this.settings.token %>
+          <span>Your Token is </span><% this.token %>
         <% } %>
       </div>
     </div>
@@ -35,12 +35,11 @@ export default class Settings extends IView {
     this.props = props;
   }
 
-  componentWillRender(){
-    console.log("component will render");
-  }
+  componentWillRender(){}
 
   componentDidRender(){
     $('#gxHeaderArea').html(`<span class="gitxpress__sidebar--header--action">Settings</span>`);
+    $('#gxFirebaseLinkStatus').prop('checked', this.props.state.sync);
     $('#gxGithubTokenSubmit').on("click", this.onSubmitToken);
     $('#gxFirebaseLinkStatus').on("click", this.onSyncEnabled);
   }
@@ -51,6 +50,6 @@ export default class Settings extends IView {
   }
 
   onSyncEnabled = ():void => {
-    this.props.onSyncEnabled();
+    this.props.onSyncEnabled(!!!this.props.state.sync);
   }
 }

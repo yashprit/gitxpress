@@ -6,15 +6,26 @@ import {
   Tag, 
   RepoParam, 
   whichBrowser,
-  BrowserType
+  BrowserType,
+  Message
 } from './service';
 import Sidebar from './view/Sidebar';
 import { 
   StorageFactory, 
   IStorage, 
+  StorageData,
   ChromeStorage 
 } from './service/StorageFactory';
 import BookmarkPopupView from './view/BookmarkPopup.View';
+
+const KEYNAME = 'gitxpress';
+
+const initalSettings = {
+  page: 'tree', 
+  tags: {}, 
+  sync: false,
+  token: ''
+}
 
 export default class Main {
 
@@ -28,30 +39,12 @@ export default class Main {
   constructor(){
     let browser:BrowserType = whichBrowser();
     this.storage = StorageFactory.createProvider(browser);
-    if(browser.isChrome) {
-      chrome.storage.onChanged.addListener(function(changes:any, area:any) {
-        console.log(changes, area);
-      });
-    }
   }
 
   bootstrap = (user:any):void => {
-    this.storage.get('__gitxpress__').then((value:any) => {
-      let intialState =  value || {
-        page: 'tree', 
-        tags: {}, 
-        settings: {
-          sync: false
-        }
-      };
+    this.storage.get(KEYNAME).then((value:StorageData) => {
 
-      /*if(user) {
-        intialState.user = user;
-        intialState.settings = {
-          sync: true,
-          token: undefined
-        }
-      }*/
+      let intialState:StorageData = Object.assign({}, initalSettings, value);
   
       this.location = document.location;
   
@@ -90,54 +83,59 @@ export default class Main {
       payload: {
         tags: newTags
       }
-    })
+    });
   }
 
   addToken = (token:any):void => {
     this.store.dispatch({
       type: 'PAGE_CHANGE',
       payload: {
-        settings: {
-          token: token
-        }
-      }
-    })
-  }
-
-  storeEvent = (state:any, actionType:string):void => {
-    this.storage.set('__gitxpress__', state).then(() => {
-      if(actionType === 'PAGE_CHANGE') {
-        this.sidebar.renderRoute(state);
-      }
-  
-      if(actionType === 'FIREBASE_STATUS') {
-        console.log(state);
-      }
-  
-      if(actionType === 'ADD_TAG') {
-        //if sync enabled make api call to firebase
-        console.log(state);
+        token: token
       }
     });
   }
 
-  syncEnabled = ():void => {
-    chrome.runtime.sendMessage({interactive: true})
-   // window.postMessage({interactive: true}, '*');
+  storeEvent = (state:any, actionType:string):void => {
+    this.storage.set(KEYNAME, state).then((newState:StorageData) => {
+      if(actionType === 'PAGE_CHANGE') {
+        this.sidebar.renderRoute(newState);
+      }
+
+      if(actionType === 'SYNC') {
+        if(newState.sync && !newState.fb) {
+          let message:Message = {
+            type: 'SYNC',
+            payload: {
+              interactive: true,
+              state: newState
+            }
+          }
+          chrome.runtime.sendMessage(message)
+        }
+      }
+  
+      if(actionType === 'FIREBASE_STATUS') {}
+  
+      if(actionType === 'ADD_TAG') {}
+    });
   }
 
-  processMessage = (message:any):void => {
-    console.log(message)
+  syncEnabled = (status:boolean):void => {
+    this.store.dispatch({
+      type: 'SYNC',
+      payload: {
+        sync: status
+      }
+    });
   }
   
-
   openPage = (currentPage:string):void => {
     this.store.dispatch({
       type: 'PAGE_CHANGE',
       payload: {
         page: currentPage
       }
-    })
+    });
   }
 }
 

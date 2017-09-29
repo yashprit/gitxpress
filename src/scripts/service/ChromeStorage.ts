@@ -1,23 +1,23 @@
 import IStorage, {StorageData} from './IStorage';
+import { isEmpty } from '../Utils';
 
 export default class ChromeStorage extends IStorage {
   set(key:string, val:any) {
 
     return new Promise((resolve:Function, reject:Function) => {
-      this.get(key).then((value:any) => {
-        console.log(value)
-        let obj:StorageData = value[key];
-        let data:any = {};
-        if(obj) {
-          
-        } else {
-          data[key] = val
-        }
-
-        console.log(obj, val, data);
+      this.get(key).then((value:StorageData) => {
         
-        chrome.storage.local.set(data);
-        resolve()
+        let newValue:StorageData = value? Object.assign({}, value, val) : Object.assign({}, val);
+        
+        chrome.storage.local.set({
+          [key]: newValue
+        }, () => {
+          if (chrome.runtime.error) {
+            reject(chrome.runtime.error)
+          } else {
+            resolve(newValue)
+          }
+        });
       }, (error:any) => {
         reject(error);
       })
@@ -26,8 +26,13 @@ export default class ChromeStorage extends IStorage {
 
   get(key: string):any {
     return new Promise((resolve, reject) => {
-      chrome.storage.local.get(key, (result:StorageData) => {
-        resolve(result)
+      chrome.storage.local.get(key, (result:any) => {
+        if (!chrome.runtime.error) {
+          let data = isEmpty(result)? undefined : result[key];
+          resolve(data);
+        } else {
+          reject(chrome.runtime.error);
+        }
       });
     })
   }

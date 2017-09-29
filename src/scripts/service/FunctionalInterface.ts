@@ -28,3 +28,8 @@ export interface Action {
   type:string;
   payload?: object
 }
+
+export interface Message {
+  type:string;
+  payload:any;
+}
