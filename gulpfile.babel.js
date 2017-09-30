@@ -34,14 +34,6 @@ gulp.task('clean', () => {
   return pipe(`./build`, $.clean())
 });
 
-gulp.task('constant', () => {
-  gulp.src(`./src/${target}/browser.json`)
-    .pipe(jeditor({
-      'type': target
-    }))
-    .pipe(gulp.dest("./src/scripts/service"));
-})
-
 gulp.task('styles', () => {
   return gulp.src('src/styles/index.scss')
     .pipe($.plumber())
@@ -56,7 +48,8 @@ gulp.task('styles', () => {
 
 gulp.task('vendor', () => {
   let src = [
-    './src/vendor/bootstrap-treeview.js'
+    './src/vendor/bootstrap-treeview.js',
+    './src/vendor/jquery-popover.js'
   ]
   return pipe(src, $.concat('gitxpress-vendor.js'), `./build/${target}/js`);
 })
@@ -117,6 +110,7 @@ function mergeAll() {
     pipe(['./src/_locales/**/*'], `./build/${target}/_locales`),
     pipe([`./src/images/${target}/**/*`], `./build/${target}/images`),
     pipe(['./src/images/shared/**/*'], `./build/${target}/images`),
+    pipe(`./src/${target}/FirebaseConfig.js`, $.babel(), `./build/${target}/js`),
     pipe(`./src/${target}/Extension.js`, $.babel(), `./build/${target}/js`),
     pipe(`./src/${target}/Proxy.js`, $.babel(), `./build/${target}/js`),
     pipe(`./src/${target}/container.html`, `./build/${target}/`),

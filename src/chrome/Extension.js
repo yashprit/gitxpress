@@ -1,6 +1,4 @@
-import { config } from './FirebaseConfig.js';
-
-firebase.initializeApp(config);
+firebase.initializeApp(window.config);
 
 chrome.storage.onChanged.addListener((changes, area) => {
   let data = changes.gitxpress

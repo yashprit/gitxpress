@@ -82,6 +82,7 @@
     "vinyl-source-stream": "^1.1.0"
   },
   "dependencies": {
-    "detect-browser": "^1.10.0"
+    "detect-browser": "^1.10.0",
+    "jquery-popover": "0.0.4"
   }
 }
