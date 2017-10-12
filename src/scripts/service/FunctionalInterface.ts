@@ -21,7 +21,14 @@ export interface TreeInfo {
 }
 
 export interface Tag {
-  [key: string]: Array<string>
+  owner: string;
+  tags: Array<string>;
+  description: string;
+  avatar: string;
+}
+
+export interface Bookmark {
+  [key: string]: Tag
 }
 
 export interface Action {

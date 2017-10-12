@@ -1,10 +1,10 @@
 //this is main service, define eveything which is common to entire application
-import { RepoParam, Tag, TreeInfo, Tree } from './FunctionalInterface';
+import { RepoParam, TreeInfo, Tree, Bookmark } from './FunctionalInterface';
 import IStorage from './IStorage';
 
 export default abstract class Service {
 
-  private tags:Tag;
+  private tags:Bookmark;
   private storage:IStorage;
   url:any;
 
@@ -42,8 +42,8 @@ export default abstract class Service {
         if(isUserAuthenticated) {
           //make api call to firebase, store inside allTags
         } else {
-          this.tags = currentState.tags || [];
-          let tagKeys = Object.keys(this.tags);
+          this.bookmarks = currentState.bookmarks || {};
+          let tagKeys = Object.keys(this.bookmarks);
           resolve(tagKeys);
         }
       });

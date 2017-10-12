@@ -10,7 +10,16 @@ $md-checkmark-color: #fff;
 
 .gitxpress {
 	position: absolute;
-  top: 0;
+	top: 0;
+	
+	&--clearfix:after {
+			visibility: hidden;
+			display: block;
+			font-size: 0;
+			content: " ";
+			clear: both;
+			height: 0;
+	}
 
 	&--relative {
 		position: relative;
@@ -269,10 +278,28 @@ $md-checkmark-color: #fff;
 		&--bookmark {
 			padding: 10px;
 			&__list {
-				margin: 10px;
 				li {
-					margin: 10px;
+					border-top: 1px solid #dfe2e5;
+					padding: 5px 0 5px 0;
 					list-style: none;
+				}
+
+				&--left {
+					float:left;
+					width: 40px
+				}
+
+				&--right {
+					float: right;
+					width: calc(100% - 45px);
+
+					span {
+						color: #586069;
+						white-space: nowrap;
+						overflow: hidden;
+						text-overflow: ellipsis;
+						display: block;
+					}
 				}
 	
 				&--dropdown {
@@ -318,3 +345,4 @@ $md-checkmark-color: #fff;
 		margin: 0;
 	}
 }
+

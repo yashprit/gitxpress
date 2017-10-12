@@ -35,7 +35,7 @@ gulp.task('clean', () => {
 });
 
 gulp.task('styles', () => {
-  return gulp.src('src/styles/index.scss')
+  return gulp.src(['src/styles/index.scss', './node_modules/selectize/dist/css/selectize.css'])
     .pipe($.plumber())
     .pipe($.sass.sync({
       outputStyle: 'expanded',

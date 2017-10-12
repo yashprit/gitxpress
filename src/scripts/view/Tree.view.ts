@@ -1,6 +1,7 @@
 import IView from './IView';
 import * as $ from 'jquery';
 import 'jquery-pjax';
+import 'selectize';
 import {TreeInfo, Service, RepoParam} from '../service';
 
 const template:string = `

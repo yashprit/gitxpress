@@ -7,11 +7,13 @@ interface JQuery {
    treeview(options?: any) : any;
    pjax(element?: any, container?:any): any;
    popover():void;
+   selectize(option?:any):void;
 }
 
 interface JQueryStatic {
   pjax(element?: any, container?:any): any;
   popover():void;
+  selectize(option?:any):void;
 }
 
 declare var chrome:any;

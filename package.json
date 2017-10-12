@@ -83,6 +83,7 @@
   },
   "dependencies": {
     "detect-browser": "^1.10.0",
-    "jquery-popover": "0.0.4"
+    "jquery-popover": "0.0.4",
+    "selectize": "^0.12.4"
   }
 }

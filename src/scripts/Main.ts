@@ -22,7 +22,7 @@ const KEYNAME = 'gitxpress';
 
 const initalSettings = {
   page: 'tree', 
-  tags: {}, 
+  bookmarks: {}, 
   sync: false,
   token: ''
 }
